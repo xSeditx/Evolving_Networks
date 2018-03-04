@@ -1,0 +1,280 @@
+3:3 
+almost finished the worst code I have ever written in my life for the neural network. It need MASSIVE CLEANING
+
+Go fix te Synapses: Currently OTHER is not pointing to the corret place
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Left overs..... Brain.h
+
+
+
+
+
+
+
+
+
+
+
+/*
+class Synapse{
+    Neuron *Parent;
+    Neuron *Child;
+};
+
+struct Neuron{
+public:
+    double Weight,
+           Bias;
+
+    Neuron():Bias(1){}
+
+    vector<Synapse> Connections;
+};
+
+
+class Layer{
+public:
+    int Number_of_Neurons;
+    vector<Neuron> Neurons;
+};
+
+class Brain{
+public:
+    int Number_of_layers;
+    vector<Layer> Layers;
+};*/
+
+
+ 
+
+
+//
+
+
+
+//  for(int NeuronCount = 0;NeuronCount < hidden; NeuronCount++)
+//  {
+//          for(int inputcount = 0; inputcount < Layers[0].Number_of_Neurons ; inputcount++)
+//          {
+//                 Synapse Syn =  Synapse(RANDOM(1), &Layers[1].Neurons[NeuronCount] );
+//                  Syn.Other = &Layers[1].Neurons[NeuronCount];
+//                 Layers[0].Neurons[inputcount].Synapses.push_back(Syn);
+//          }
+//  }
+//
+//
+//  for(int NeuronCount = 0;NeuronCount < outputs; NeuronCount++)
+//  {
+//          for(int inputcount = 0; inputcount < Layers[2].Number_of_Neurons; inputcount++)
+//          {
+//                 Synapse Syn = Synapse(RANDOM(1), &Layers[2].Neurons[NeuronCount] );
+//                 Syn.Other = &Layers[2].Neurons[NeuronCount];
+//                 Layers[1].Neurons[inputcount].Synapses.push_back(Syn);
+//          }
+//  }
+//
+
+main.cpp
+
+
+
+
+   // for(int LayerCount = 0;LayerCount < (Number_of_Layers - 1); LayerCount++){
+   //     for(int NeuronCount = 0; NeuronCount < Layers[LayerCount].Number_of_Neurons;NeuronCount++ ){
+   //          
+   //     }
+   // }
+
+
+
+
+
+//???   LAST CELL DOES NOT EFFECT ALL OTHER, THE FIRST PROCESSED EFFECTS ALL AND CREATES A HIERACHY
+
+
+
+
+
+
+
+
+
+/*
+void main(){
+    
+    vector<Neuron> Brain ;
+    
+    Brain.resize(NUBER_OF_NEURONS);
+
+    for(Neuron &n: Brain){
+        n.Synapses.resize(NUBER_OF_NEURONS);
+        n.Voltage = RANDOM(2) - 1;
+       Print(n.Voltage);
+    }
+    Print(Brain.size());
+
+    for(int count = Brain.size(); count > 0;count--)
+    {
+        Print(Brain[count - 1].Voltage);
+    }
+
+   // Print(Brain.back().Voltage);
+    system("PAUSE");
+}*/
+
+
+
+
+CELL.CPP
+
+
+
+
+
+
+
+
+// FORCE.X = FORCE_APPLIED * COS(ANGLE)
+// FORCE.Y = FORCE_APPLIED * SIN(ANGLE)
+// acceleration = netForce / mass
+/// Acceleration = change in Velocity / change in time
+/// Velocity = Velocity + Acceleration
+// Acceleration = Force / Mass
+
+//=============================================================================================================================================================
+//                                                                                                                                                             
+//=============================================================================================================================================================
+
+
+//  Child.Delta_Distance = Child.Distance - Get_Distance(*Child.second, Parent); // Prob does not need to exist but may be useful to calculate yet not store
+
+
+// (EX:)    tf = 2.47seconds     Acceleration = 46.1(m/s) - 18.5(m/s)  / 2.47(seconds) - 0(seconds) = 11.17(m/s^2)
+//           ti = 0                                                                                                                  
+//                                                                                                                       
+//      Change in Velocity = Final Velocity - Initial Velocity                                                                                                 
+//      Change in Time     = Final Time - Initial Time            
+//                                                                                                                        
+//      Acceleration       = Change in time / Change in Velocity                                                                                               
+//                                                                                                                        
+//                                                                                                                        
+//                                                                                                                        
+//       1 Newton = 1kg - (m/s^2)                                                                                                                 
+//       <-2N-- + --7N-> = --5N->                                                                                                             
+//                                                                                                                        
+// (EX:) F            = 10N                                                                                                                       
+//       mass         = 2kg                                                                                                                 
+//       Acceleration = 10N / 2kg = 5(m/s^2)
+//                                                                                                                        
+//     Origin == Parent
+//     Bob = Child
+//     Direction =   Bob - Origin           
+//   Current length = disance from Parent to Child.
+//    Rest Length = Child.Distance
+//    K = .1
+//    displacement  Current length - Rest Length                                                                                                                  
+//                                                                                                                        
+//                                                                                                                        
+////   hooks law 
+////    -K is constant
+// Displacement = Change in shape
+////    Force = -K * Displacement
+
+
+
+
+
+
+
+//============ MAKE A SPHERE WITH EVERY EDGE CONNECTED TO EVERY OTHER CELL
+//
+//FOR_LOOP(cellcount, numcells){                                                // FOR EACH CELL.....
+//    int e = 0;
+//     for(int edgecount = 0; edgecount  <  numcells;edgecount++ ){                                            // MAKE EDGES CONNECTING THE OTHER CELLS
+//         if(edgecount != cellcount){
+//                   cells[cellcount].edges.push_back(MakeEdge(&cells[cellcount], cells[edgecount], RANDOM(1)));  
+//                   e++;
+//     }
+// }
+//}
+
+
+
+
+
+    /*  MAKE RANDOM CONNECTIONS
+    int e = rand()%(numcells - 1);
+FOR_LOOP(cellcount, e){
+    FOR_LOOP(edgecount,e){
+        cells[cellcount].edges.push_back(MakeEdge(&cells[rand()%numcells], cells[rand()%numcells], RANDOM(1)));
+                cells[cellcount].edges.push_back(MakeEdge(&cells[rand()%numcells], cells[rand()%numcells], RANDOM(1)));
+                        cells[cellcount].edges.push_back(MakeEdge(&cells[rand()%numcells], cells[rand()%numcells], RANDOM(1)));
+    }
+}*/
+
+
+
+
+//FOR_LOOP(cellcount, numcells - 1){                                                // FOR EACH CELL.....
+//    int a = cellcount,b =0;
+//    if(a == 0) b = numcells-1;
+//    if(a == numcells-1) b = 0;
+//       cells[cellcount].edges.push_back(MakeEdge(&cells[a], cells[b], RANDOM(1)));  
+//       cells[cellcount].edges.push_back(MakeEdge(&cells[b], cells[a], RANDOM(1)));  
+//}
+//
+
+
+
+
+
+
+
+//for(int cellcount = numcells - 1;cellcount > 1;cellcount--){
+//      cells[cellcount].edges.push_back(MakeEdge(&cells[cellcount], cells[cellcount-1], RANDOM(1)));  
+//
+//}
+//
+ //FOR_LOOP(cellcount, numcells){                                                // FOR EACH CELL.....
+ //    int e = 0;
+ //     for(int edgecount = 0; edgecount  <  numcells;edgecount++ ){                                            // MAKE EDGES CONNECTING THE OTHER CELLS
+ //         if(edgecount != cellcount){
+ //                   cells[cellcount].edges.push_back(MakeEdge(&cells[cellcount], cells[edgecount], RANDOM(1)));  
+ //                   e++;
+ //     }
+ // }
+ //}
+
+
+ //
+
+     //   FOR_LOOP(edgecount, numcells){                                            // MAKE EDGES CONNECTING THE OTHER CELLS
+          
+      //                 cells.back().edges[numcells] = MakeEdge(cells[numcells], cells[edgecount], RANDOM(1));  
+   //           }
