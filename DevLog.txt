@@ -6,7 +6,12 @@ Go fix te Synapses: Currently OTHER is not pointing to the corret place
 
 
 
+3/7:
 
+Success, Everything seems to be working perfectly, There are some minor snags that need to be addressed such as data normalization. When the angle
+The Cell is already facing is used as an input then the direction of every cell all lands on a single position due to that
+data overpowering the other data in the network. Its good that I caught something like that this early because now I must
+think about how I plan to set the inputs of the network up so that they are all in the same range.
 
 
 
@@ -278,3 +283,89 @@ FOR_LOOP(cellcount, e){
           
       //                 cells.back().edges[numcells] = MakeEdge(cells[numcells], cells[edgecount], RANDOM(1));  
    //           }
+
+
+
+
+
+
+
+
+   
+ //
+ //for(Neuron &H: Layers[1].Neurons){
+ //    for(Neuron &I: Layers[0].Neurons){
+ //         Synapse *Syn =  new Synapse(RANDOM(1), I);  
+ //        // Syn.Other = &I; // SHOULD NOT NEED THIS AS IT SHOULD BE ASSIGNEDD IN THE ABOVE
+ //         Layers[1].Neurons.Synapses.push_back(Syn);
+ //    }
+ //}
+ //
+ //  // Layers[1].Neurons[I].Synapses.reserve(Layers[1].Number_of_Neurons);
+ //FOR_LOOP(H, Layers[1].Number_of_Neurons){
+ //     FOR_LOOP(I , Layers[0].Number_of_Neurons){
+ //         Synapse *Syn = new Synapse(RANDOM(1), Layers[0].Neurons[I]);//MakeSynapse(RANDOM(1), &Layers[0].Neurons[I]);  
+ //         Layers[1].Neurons[H].Synapses->push_back(*Syn);   // Synapses.push_back(&Syn);
+ //     }
+ // }
+ //
+ //
+ //FOR_LOOP(O, Layers[2].Number_of_Neurons){
+ //     FOR_LOOP(H , Layers[1].Number_of_Neurons){
+ //         Synapse *Syn = new Synapse(RANDOM(1), Layers[1].Neurons[H]);//Synapse Syn = MakeSynapse(RANDOM(1),  &Layers[1].Neurons[H]);  
+ //         Layers[2].Neurons[O].Synapses->push_back(*Syn);   // Synapses.push_back(&Syn);
+ //     }
+ // }
+ //
+
+
+//  for(Neuron &O: Layers[2].Neurons){
+//       for(Neuron &H: Layers[1].Neurons){
+//            Synapse *Syn =  new Synapse(RANDOM(1), H);  
+//           // Syn.Other = &H; // SHOULD NOT NEED THIS AS IT SHOULD BE ASSIGNEDD IN THE ABOVE
+//            Layers[2].Neurons.Synapses.push_back(&Syn);
+//       }
+//  }
+//
+//
+
+
+
+
+
+
+
+//
+//
+// for(Neuron &H: Layers[1].Neurons){
+//     for(Neuron &I: Layers[0].Neurons){
+//          H.Synapses.push_back(MakeSynapse(RANDOM(1), &H, &I));   // Synapses.push_back(&Syn);
+//     }
+// }
+//
+// int Hcount=0,
+//     Ocount=0;
+ // for(Neuron &O: Layers[2].Neurons){
+ //     Hcount = 0;
+ //     for(Neuron &H: Layers[1].Neurons){
+ //          O.Synapses.push_back(MakeSynapse(RANDOM(1), &O, &Layers[1].Neurons[Hcount]));   // Synapses.push_back(&Syn);
+ //          Hcount++;
+ //     }
+ //     Ocount++;
+ // }
+ //
+
+ // FOR_LOOP(Hcount, Layers[1].Number_of_Neurons){
+ //     FOR_LOOP(Icount, Layers[0].Number_of_Neurons){
+ //          Layers[1].Neurons[Hcount].Synapses.push_back(
+ //              MakeSynapse(RANDOM(1), &Layers[1].Neurons[Hcount], &Layers[0].Neurons[Icount]));    
+ //     }
+ // }
+ // 
+ // FOR_LOOP(Ocount, Layers[2].Number_of_Neurons){
+ //     FOR_LOOP(Hcount, Layers[1].Number_of_Neurons){
+ //          Layers[2].Neurons[Ocount].Synapses.push_back(
+ //              MakeSynapse(RANDOM(1), &Layers[2].Neurons[Ocount], &Layers[1].Neurons[Hcount]));    
+ //     }
+ // }
+ //

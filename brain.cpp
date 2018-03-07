@@ -2,155 +2,125 @@
 #include"brain.h"
 #include"window.h"
 
-
+extern Neuron *GLOBAL_NEURON; // DEBUG SHIT
+extern Neuron  NARRAY[100];
 
 Synapse::Synapse(){
+    CREATOR = 1;
 }
-Synapse::~Synapse(){}
-Synapse::Synapse(float value , Neuron *other)
-{
-     Other = other; 
-    Weight = value; 
-    Delta_Weight = 0;
+Synapse::~Synapse(){
 
 }
+Synapse MakeSynapse(float value, Neuron *parent, Neuron *other){
+        Synapse ret;
+                ret.Other = other; 
+                ret.Weight = value; 
+                ret.CREATOR = 3;
+ return ret;
+}
 
 
-
-//---------------------------------------------------------------------------------------------------------------------------------------
-//                             LAYER CONSTRUCTOR AND METHODS                                                                                              
-//_____________________________________________________________________________________________________________________
+//---------------------------------------------------------------------------------------------------
+//                             LAYER CONSTRUCTOR AND METHODS                                         
+//___________________________________________________________________________________________________
 
 Layer::Layer(){}
 Layer::~Layer(){}
 
 
-//---------------------------------------------------------------------------------------------------------------------------------------
-//                             NEURON CONSTRUCTOR AND METHODS                                                                                              
-//_____________________________________________________________________________________________________________________
+//---------------------------------------------------------------------------------------------------
+//                             NEURON CONSTRUCTOR AND METHODS                                        
+//___________________________________________________________________________________________________
 
-Neuron::~Neuron(){
-Value = 200;}
+Neuron::~Neuron(){}
+Neuron::Neuron()
+      : Value(0){}
 
-Neuron::Neuron(){
-    Value = 999; //RANDOM(10);//0.0;
-    ActivatedValue = 0.0;
-    DerivativeValue = 0.0;
-}
 
-//---------------------------------------------------------------------------------------------------------------------------------------
-//                             NET CONSTRUCTOR AND METHODS                                                                                              
-//_____________________________________________________________________________________________________________________
 
+//---------------------------------------------------------------------------------------------------
+//                             NET CONSTRUCTOR AND METHODS                                           
+//___________________________________________________________________________________________________
+Net::Net(){}
+Net::~Net(){}
 Net::Net(int inputs, int hidden, int outputs){
 
-//_____________________________Input________________________________________________________________
+//_____________________________Input_________________________________________________________________
 
-    Layer *l = new Layer();
-    l->LayerType = Layer::Input; 
-    l->Number_of_Neurons = inputs;
+    Layer *Input = new Layer();
+    Input->LayerType = Layer::Input; 
+    Input->Number_of_Neurons = inputs;
 
     FOR_LOOP(N, inputs){
         Neuron *nur = new Neuron(); 
-         l->Neurons.push_back(*nur);
+         Input->Neurons.push_back(*nur);
       
     }
-    Layers.push_back(*l);
+    Layers.push_back(*Input);
     
 //___________________________Hidden__________________________________________________________________
 
-    Layer *h = new Layer();
-    h->LayerType = Layer::Hidden; 
-    h->Number_of_Neurons = hidden;
+    Layer *Hidden = new Layer();
+    Hidden->LayerType = Layer::Hidden; 
+    Hidden->Number_of_Neurons = hidden;
 
     FOR_LOOP(H, hidden){
         Neuron *hnur = new Neuron(); 
-        h->Neurons.push_back(*hnur);
+        Hidden->Neurons.push_back(*hnur);
     }
-    Layers.push_back(*h);
+    Layers.push_back(*Hidden);
 
-//___________________________Output____________________________________________________________________
+//___________________________Output__________________________________________________________________
 
-    Layer *o = new Layer();
-    o->LayerType = Layer::Output; 
-    o->Number_of_Neurons = outputs;
+    Layer *Output = new Layer();
+    Output->LayerType = Layer::Output; 
+    Output->Number_of_Neurons = outputs;
 
     FOR_LOOP(O, outputs){
         Neuron *onur = new Neuron(); 
-        o->Neurons.push_back(*onur);
+        Output->Neurons.push_back(*onur);
     }
    
-    Layers.push_back(*o);
-//_______________________________________________________________________________________________________
+    Layers.push_back(*Output);
+//___________________________________________________________________________________________________
     Number_of_Layers = 3;
 
- //
- //for(Neuron &H: Layers[1].Neurons){
- //    for(Neuron &I: Layers[0].Neurons){
- //         Synapse *Syn =  new Synapse(RANDOM(1), I);  
- //        // Syn.Other = &I; // SHOULD NOT NEED THIS AS IT SHOULD BE ASSIGNEDD IN THE ABOVE
- //         Layers[1].Neurons.Synapses.push_back(Syn);
- //    }
- //}
- //
-     // Layers[1].Neurons[I].Synapses.reserve(Layers[1].Number_of_Neurons);
-   FOR_LOOP(H, Layers[1].Number_of_Neurons){
-        FOR_LOOP(I , Layers[0].Number_of_Neurons){
-            Synapse *Syn =  new Synapse(RANDOM(1),  &Layers[0].Neurons[I]);  
-            Layers[1].Neurons[H].Synapses.push_back(*Syn);   // Synapses.push_back(&Syn);
-        }
-    }
-   FOR_LOOP(O, Layers[2].Number_of_Neurons){
-        FOR_LOOP(H , Layers[1].Number_of_Neurons){
-            Synapse Syn =  Synapse(RANDOM(1),  &Layers[1].Neurons[H]);  
-            Layers[2].Neurons[O].Synapses.push_back(Syn);   // Synapses.push_back(&Syn);
-        }
-    }
-
-
-
-
-//
-//  for(Neuron &O: Layers[2].Neurons){
-//       for(Neuron &H: Layers[1].Neurons){
-//            Synapse *Syn =  new Synapse(RANDOM(1), H);  
-//           // Syn.Other = &H; // SHOULD NOT NEED THIS AS IT SHOULD BE ASSIGNEDD IN THE ABOVE
-//            Layers[2].Neurons.Synapses.push_back(&Syn);
-//       }
-//  }
-//
-//
-
 }
 
-Net::Net(){} Net::~Net(){}
+
 
 void Net::Think(){
-    float Sum = 0.0;
 
-//
-//    for(Neuron &H: Layers[1].Neurons){
-//        for(Synapse &S: H.Synapses){
-//          Sum += S.Weight * S.Other->Value;
-//        }
-//        H.Value = Activation(Sum);
-//    }
-//    Sum = 0.0;
+        float 
+        Sum = 0.0;
+        
+        FOR_LOOP(HiddenCount, Layers[1].Number_of_Neurons){
+            FOR_LOOP(InputCount,Layers[0].Number_of_Neurons){
+                 Sum += (Layers[0].Neurons[InputCount].Value * 
+                         Layers[1].Neurons[HiddenCount].Synapses[InputCount].Weight);  
+            }
+          Layers[1].Neurons[HiddenCount].Value = Activation(Sum);
+        }
 
- //   for(Neuron &O: Layers[2].Neurons){
- //       for(Synapse &S: O.Synapses){
- //         Sum += S.Weight * S.Other->Value;
- //       }
- //       O.Value = Activation(Sum);
- //   }
- //
-
+        Sum = 0.0;
+        
+        FOR_LOOP(OutputCount, Layers[2].Number_of_Neurons){
+            FOR_LOOP(HiddenCount,Layers[1].Number_of_Neurons){
+                 Sum += (Layers[1].Neurons[HiddenCount].Value * 
+                         Layers[2].Neurons[OutputCount].Synapses[HiddenCount].Weight); 
+            }
+          Layers[2].Neurons[OutputCount].Value = Activation(Sum);
+        }
 }
 
 
 
 
-inline float Sigmoid      (float x)
+
+
+void Net::Draw(){}
+ 
+ inline float Sigmoid      (float x)
 {
     return 1.0 / (1.0 + exp(-x));
 }
@@ -159,3 +129,4 @@ inline float Activation   (float x)
     float y = (Sigmoid(x) * 2) - 1;
     return y;
 }
+

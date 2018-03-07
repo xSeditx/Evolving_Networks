@@ -13,7 +13,8 @@
 #include<iostream>
 #include "brain.h"
 
-
+Neuron *GLOBAL_NEURON = nullptr;
+Neuron NARRAY[100];
 
 int KEYBOARD_HANDLER(SDL_Keycode sym){
     return 0;
@@ -47,14 +48,13 @@ void main()
 
     Organism Creature(30);
 
-
     Cell *Selected = nullptr;
 
     while(LOOP_GAME()){
 
        _CLS;
-     Print(SCREEN->FPS) ;
-   //    Print("Geneva anne Long");
+     //Print(SCREEN->FPS) ;
+ 
 //----------------------------- DRAW EACH CREATURE ------------------------------------------------------------
  
  for(Cell &Parent:Creature.cells){
@@ -100,19 +100,14 @@ void main()
            if(Length > 400) Length  = 400;                                              // DRAW MOUSE INFORMATION
         LINE2(200,200,SCREEN->MOUSE_ANGLE, Length);
 //-------------------------------------------------------------------------------------------------------------
-#if 0
-        for(Cell &c:Creature.cells){
-           c.Force.X += 50*((RANDOM(2) - 1)); // c.Brain.Layers[2].Neurons[0].Value;//
-           c.Force.Y += 50*((RANDOM(2) - 1)); //c.Brain.Layers[2].Neurons[0].Value;;//
-          // c.Angle = RANDOM(360);
-           //Print(c.Brain.Layers[1].Neurons[1].Value);
-       }
-#endif     
+
 #if 1
-         //  Creature.cells[1].Force.X += 50*((RANDOM(2) - 1)); // c.Brain.Layers[2].Neurons[0].Value;//
-        //  Creature.cells[1].Force.Y += 50*((RANDOM(2) - 1)); //c.Brain.Layers[2].Neurons[0].Value;;//
-          Creature.cells[1].Angle += RANDOM(20) - 10;
+         //Creature.cells[1].Force.X += 50*((RANDOM(2) - 1)); // c.Brain.Layers[2].Neurons[0].Value;//
+         //Creature.cells[1].Force.Y += 50*((RANDOM(2) - 1)); //c.Brain.Layers[2].Neurons[0].Value;;//
+         //Creature.cells[2].Brain.Layers[0].Neurons[0].Value = RANDOM(1);// - 40;
 #endif
+
+
         Creature.Update();
        _SYNC;
     }

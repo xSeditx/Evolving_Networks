@@ -39,8 +39,6 @@ public:
    Cell();~Cell();
    Cell(Organism Parent, int numedges);
 
-    int ID;
-
     Vector2D      Offset,
                   Potential,
                   Velocity,          // Force = Mass * Acceleration
@@ -79,15 +77,15 @@ struct Edge {
     Vector2D  Displacement,
               RestDistance;
 
-    float          Distance, 
-                    Tension,
-                      Angle;
+    float         Distance, 
+                   Tension,
+                     Angle;
 
     unsigned long Color;
 };
 
-Edge MakeEdge(Cell *parent, Cell &other, unsigned char tension);
 
+Edge MakeEdge(Cell *parent, Cell &other, unsigned char tension);
 
 
 class Organism {

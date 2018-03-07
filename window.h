@@ -113,5 +113,3 @@ struct stack_array{
 	int REMOVE();
 	int GETLAST();
 };
-
-
