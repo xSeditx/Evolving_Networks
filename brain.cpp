@@ -85,6 +85,29 @@ Net::Net(int inputs, int hidden, int outputs){
 //___________________________________________________________________________________________________
     Number_of_Layers = 3;
 
+
+
+   FOR_LOOP(Hcount, Layers[1].Number_of_Neurons){
+       FOR_LOOP(Icount,  Layers[0].Number_of_Neurons){
+            Layers[1].Neurons[Hcount].Synapses.push_back(
+                MakeSynapse(RANDOM(1), &Layers[1].Neurons[Hcount],
+                                       &Layers[0].Neurons[Icount]));    
+       }
+   }
+   
+   FOR_LOOP(Ocount, Layers[2].Number_of_Neurons){
+       FOR_LOOP(Hcount, Layers[1].Number_of_Neurons){
+            Layers[2].Neurons[Ocount].Synapses.push_back(
+                MakeSynapse(RANDOM(1), &Layers[2].Neurons[Ocount],
+                                       &Layers[1].Neurons[Hcount]));    
+       }
+   }
+
+
+
+
+
+
 }
 
 
@@ -112,15 +135,12 @@ void Net::Think(){
           Layers[2].Neurons[OutputCount].Value = Activation(Sum);
         }
 }
-
-
-
-
-
-
 void Net::Draw(){}
  
- inline float Sigmoid      (float x)
+
+
+
+inline float Sigmoid      (float x)
 {
     return 1.0 / (1.0 + exp(-x));
 }

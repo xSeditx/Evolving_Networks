@@ -37,14 +37,15 @@ class Organism ; struct Edge; // Forward Declaration
 class Cell {
 public:
    Cell();~Cell();
-   Cell(Organism Parent, int numedges);
-
+   Cell(Organism *Parent);
+  // Cell(const Cell &other);
     Vector2D      Offset,
                   Potential,
                   Velocity,          // Force = Mass * Acceleration
                   Acceleration,
                   Force;
                   
+    int           ID;
     float         Friction;
                   
     float         Angle,
@@ -65,15 +66,21 @@ public:
     void See();
 };
 
-Cell  MakeCell(Organism *parent);
-
 struct Edge {
     Edge();~Edge();
-    Edge(Cell *parent, Cell *other, double Tension);
+
+ // Edge(Cell *parent, Cell *other, double Tension);
+
+    Edge(Cell *parent, Cell &other, unsigned char tension);
 
     Cell *second;
-    int ID;
+
+
+
+    int   Parent_ID,
+           Child_ID;
                
+
     Vector2D  Displacement,
               RestDistance;
 
@@ -84,22 +91,26 @@ struct Edge {
     unsigned long Color;
 };
 
-
-Edge MakeEdge(Cell *parent, Cell &other, unsigned char tension);
-
-
 class Organism {
 public:
-     Organism(unsigned char numcells);
+    Organism::Organism();
+    Organism::~Organism();
+    
+   // Organism::Organism(Organism const &Clone);
+
+    Organism(unsigned char numcells);
 
     unsigned char Number_of_Cells;
-
+    
     Vector2D Position, 
              Potential, 
-             Velocity;
+             Velocity, 
+             Starting; 
 
-    float    Speed,
-             Angle;
+   // float    Speed,
+   //          Angle;
+
+    float    Distance_moved;
 
     std::vector<Cell> cells;
 
@@ -111,3 +122,9 @@ public:
 
 
 extern float Get_Distance(const Cell &parent,const Cell &child);
+
+
+
+extern Organism *Make_Copy(const Organism Clone);
+//Edge MakeEdge(Cell *parent, Cell &other, unsigned char tension);
+//Cell  MakeCell(Organism *parent);

@@ -70,12 +70,14 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Vertex2D.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="brain.h" />
     <ClInclude Include="cell.h" />
     <ClInclude Include="Vertex2D.h" />
     <ClInclude Include="window.h" />
+    <ClInclude Include="world.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevLog.txt" />

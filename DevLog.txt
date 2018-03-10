@@ -24,7 +24,14 @@ think about how I plan to set the inputs of the network up so that they are all 
 
 
 
-
+MOUSE INFORMATION IE: The line on the screen which shows the speed and direction of the mouse
+//                       float Length = abs(SCREEN->MOUSE_VELOCITY.x) + abs(SCREEN->MOUSE_VELOCITY.y);
+//               
+//                       if(Length > 400) Length  = 400;                                              // DRAW MOUSE INFORMATION
+//                       LINE2(200,200,SCREEN->MOUSE_ANGLE, Length);
+//-------------------------------------------------------------------------------------------------------------
+                
+ 
 
 
 
@@ -369,3 +376,317 @@ FOR_LOOP(cellcount, e){
  //     }
  // }
  //
+
+
+
+
+ #if 0
+FOR_LOOP(CellCount, Number_of_Cells){
+      FOR_LOOP(Hcount, cells[CellCount].Brain.Layers[1].Number_of_Neurons){
+       FOR_LOOP(Icount,  cells[CellCount].Brain.Layers[0].Number_of_Neurons){
+             cells[CellCount].Brain.Layers[1].Neurons[Hcount].Synapses.push_back(
+                MakeSynapse(RANDOM(1), &cells[CellCount].Brain.Layers[1].Neurons[Hcount],
+                                       &cells[CellCount].Brain.Layers[0].Neurons[Icount]));    
+       }
+   }
+   
+   FOR_LOOP(Ocount, cells[CellCount].Brain.Layers[2].Number_of_Neurons){
+       FOR_LOOP(Hcount, cells[CellCount].Brain.Layers[1].Number_of_Neurons){
+            cells[CellCount].Brain.Layers[2].Neurons[Ocount].Synapses.push_back(
+                MakeSynapse(RANDOM(1), &cells[CellCount].Brain.Layers[2].Neurons[Ocount],
+                                       &cells[CellCount].Brain.Layers[1].Neurons[Hcount]));    
+       }
+   }
+}
+
+#endif
+
+
+
+
+
+
+
+
+
+/*
+ Organism Mutate(Organism *Parent){
+     Organism ret = *Parent;
+     return ret;
+ }*/
+/*
+  Organism(Organism *parent){
+
+  }*/
+
+
+
+
+
+  // for(Cell &C : cells){
+  //         int  I = 3,//C.Number_of_edges * 2,
+  //              H = 5,//rand()%(I * 2),
+  //              O = 2;//2;
+  //
+  //              C.Brain =  Net(I,H,O);
+  //
+  // }
+
+
+//Edge MakeEdge(Cell *parent, Cell &other, unsigned char tension){
+//    parent->Number_of_edges++;
+//
+//    Edge ret;
+//        ret.RestDistance = Get_Displacement( other.Offset, parent->Offset);
+//        ret.second   = &other;
+//        ret.Distance =  Get_Distance(*parent, other); 
+//        ret.Tension  =  tension;
+//        ret.Angle    =  0;
+//        ret.Color    =  parent->Color; 
+//        ret.Displacement = 0;
+//    return ret;
+//
+//}
+////
+
+
+
+
+
+//_______________________________________________________________
+//||  int ID;
+//||  Vector2D Offset, Potential, Velocity, Acceleration, Force;
+//||  double   Friction;
+//||  unsigned char Number_of_edges;
+//||  std::vector<Edge> edges;
+/*
+Cell MakeCell(Organism *parent){
+    Cell ret; 
+    parent->Number_of_Cells++;
+
+    ret.Offset.X = ret.Potential.X  = RANDOM(300);
+    ret.Offset.Y = ret.Potential.Y  = RANDOM(300);
+
+    ret.Velocity  = 0;
+    ret.Force     = 0;
+
+    ret.Speed = 0;
+    ret.Angle = 0.0;//RANDOM(0);
+    ret.Friction  = RANDOM(1);
+
+    ret.Color = RGB(RANDOM(255),
+                    RANDOM(255),
+                    RANDOM(255));
+
+    if (ret.Color <= RGB(55,55,55))ret.Color = RGB(255,255,255);
+    ret.Mass = 10;
+    ret.Parent = parent;
+    return ret;
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  
+//
+// Number_of_Cells = 0; // Parent.Number_of_Cells;
+//
+//  Position  = Parent.Position; 
+//  Potential = Parent.Potential; 
+//  Velocity  =  Parent.Velocity; 
+//  Starting  =  Parent.Starting;
+//  Position.X += rand()%SCREENWIDTH;
+//  Position.Y += rand()%SCREENHEIGHT;
+//
+//   //   Speed = *&Parent.Speed;
+//     // Angle = *&Parent.Angle;
+//
+//  Distance_moved = 0;
+//
+////  cells = new Cell[Number_of_Cells]; //Parent.cells;
+//
+//  FOR_LOOP(C, Number_of_Cells){
+//      Cell temp = Parent.cells[C];
+//      cells.push_back(temp); // = *Parent.cells[C];
+//  }
+//
+//  FOR_LOOP(cellcount, Number_of_Cells){
+//        int e = 0;
+//         FOR_LOOP(edgecount, rand()%Number_of_Cells){  // MAKE EDGES CONNECTING THE OTHER CELLS
+//            if(edgecount != cellcount){
+//                 int cnum  = rand()%Number_of_Cells;
+//                 int cnum2 = rand()%Number_of_Cells;
+//
+//                     cells[cnum ].edges.push_back(MakeEdge(&cells[cnum ], cells[cnum2], RANDOM(1)));  
+//                     cells[cnum2].edges.push_back(MakeEdge(&cells[cnum2], cells[cnum ], RANDOM(1)));  
+//                   
+//                     e++;
+//            }
+//      }
+//
+//   }
+// 
+//        for(Cell &C : cells){
+//          int  I = 3,//C.Number_of_edges * 2,
+//               H = 5,//rand()%(I * 2),
+//               O = 2;//2;
+//               C.Brain =  Net(I,H,O);
+//  }
+//        if(Number_of_Cells == 0) Number_of_Cells = 1;
+//OR_LOOP(CellCount, Number_of_Cells){
+//  FOR_LOOP(Hcount, cells[CellCount].Brain.Layers[1].Number_of_Neurons){
+//      FOR_LOOP(Icount,  cells[CellCount].Brain.Layers[0].Number_of_Neurons){
+//            cells[CellCount].Brain.Layers[1].Neurons[Hcount].Synapses.push_back(
+//               MakeSynapse(RANDOM(1), &cells[CellCount].Brain.Layers[1].Neurons[Hcount],
+//                                      &cells[CellCount].Brain.Layers[0].Neurons[Icount]));    
+//      }
+//  }
+//  
+//  FOR_LOOP(Ocount, cells[CellCount].Brain.Layers[2].Number_of_Neurons){
+//      FOR_LOOP(Hcount, cells[CellCount].Brain.Layers[1].Number_of_Neurons){
+//           cells[CellCount].Brain.Layers[2].Neurons[Ocount].Synapses.push_back(
+//               MakeSynapse(RANDOM(1), &cells[CellCount].Brain.Layers[2].Neurons[Ocount],
+//                                      &cells[CellCount].Brain.Layers[1].Neurons[Hcount]));    
+//      }
+//  }
+//
+//
+//
+//FOR_LOOP(CellCount, Number_of_Cells){
+//   FOR_LOOP(Hcount, cells[CellCount].Brain.Layers[1].Number_of_Neurons){
+//       FOR_LOOP(Icount,  cells[CellCount].Brain.Layers[0].Number_of_Neurons){
+//             cells[CellCount].Brain.Layers[1].Neurons[Hcount].Synapses.push_back(
+//                MakeSynapse(RANDOM(1), &cells[CellCount].Brain.Layers[1].Neurons[Hcount],
+//                                       &cells[CellCount].Brain.Layers[0].Neurons[Icount]));    
+//       }
+//   }
+//   
+//   FOR_LOOP(Ocount, cells[CellCount].Brain.Layers[2].Number_of_Neurons){
+//       FOR_LOOP(Hcount, cells[CellCount].Brain.Layers[1].Number_of_Neurons){
+//            cells[CellCount].Brain.Layers[2].Neurons[Ocount].Synapses.push_back(
+//                MakeSynapse(RANDOM(1), &cells[CellCount].Brain.Layers[2].Neurons[Ocount],
+//                                       &cells[CellCount].Brain.Layers[1].Neurons[Hcount]));    
+//       }
+//   }
+//}
+//
+
+
+
+
+
+
+
+
+
+#if 0
+Organism::Organism(Organism const &Parent){
+    *this = *&Parent; 
+   Position.X = Potential.X =  -100;//rand()%SCREENWIDTH / 2;// / 2;  
+    Position.Y = Potential.Y =  -100; //rand()%SCREENHEIGHT / 2;// / 2;
+    Velocity.X = Velocity.Y = 0;
+    Number_of_Cells=0;
+    int numcells = Parent.Number_of_Cells;
+    Starting.X = Position.X;
+    Starting.Y = Position.Y;
+    Distance_moved = 0.0;
+
+    FOR_LOOP(count, numcells){
+        Cell *temp = new Cell(this);
+        cells.push_back(*temp);
+    }
+
+
+    float     X =  0,
+              Y =  0, 
+          angle =  0,
+           dist =  25,
+          Theta =  360 / Number_of_Cells;
+
+    for(Cell &c : cells){
+       angle+=Theta;
+        X+= dist * cos(RADIANS(angle));
+        Y+= dist * sin(RADIANS(angle));
+        c.Offset.X = X; // rand()%(int)dist;//
+        c.Offset.Y = Y; // rand()%(int)dist;//
+    }
+
+   FOR_LOOP(cellcount, numcells){   // FOR EACH CELL.....
+       int e = 0;
+       FOR_LOOP(edgecount, rand()%numcells){  // MAKE EDGES CONNECTING THE OTHER CELLS
+             if(edgecount != cellcount){
+                  int cnum  = rand()%numcells;
+                  int cnum2 = rand()%numcells;
+                  Cell *other1( &cells[cnum ]);
+                  Cell *other2( &cells[cnum2]); 
+                   //   cells[cnum ].edges.push_back(MakeEdge(other1, *other2, RANDOM(1)));  
+                    //  cells[cnum2].edges.push_back(MakeEdge(other2, *other1, RANDOM(1)));  
+                    
+                      e++;
+             }
+       }
+   }
+
+
+   for(Cell &C : cells){
+           int  I = 3,//C.Number_of_edges * 2,
+                H = 5,//rand()%(I * 2),
+                O = 2;//2;
+                Net *temp = new  Net(I,H,O); 
+                C.Brain = *temp; // new Net(I,H,O);
+
+   }
+}
+
+#endif
+
+
+#if 0
+Cell::Cell(const Cell &other){
+      Cell ret; 
+   //other.Parent->Number_of_Cells++;
+
+   Offset.X = Potential.X  = RANDOM(300);
+   Offset.Y = Potential.Y  = RANDOM(300);
+
+   Velocity  = 0;
+   Force     = 0;
+
+   Speed = 0;
+   Angle = RANDOM(0);
+   Friction  = RANDOM(1);
+
+   Color = RGB(RANDOM(255),
+                   RANDOM(255),
+                   RANDOM(255));
+
+   if (Color <= RGB(55,55,55))Color = RGB(255,255,255);
+   Mass = 10;
+   Parent = other.Parent;
+}
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
