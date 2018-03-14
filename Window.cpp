@@ -27,6 +27,8 @@ int TOP_BOUNDS = 0 + WINDOW_OFFSET;
 int RIGHT_BOUNDS = SCREENWIDTH - WINDOW_OFFSET;
 int BOTTOM_BOUNDS = SCREENHEIGHT - WINDOW_OFFSET;
 
+float Cos[360];// = {0}, 
+float Sin[360]; // = {0};
 
 
 // CONSTRUCTS A BASIC WINDOW AND BACKBUFFER ASSOCIATED WITH WINDOW
@@ -57,23 +59,30 @@ WINDOW::WINDOW(int x,int y,int width,int height,char *title){
         memset(WINDOW_PIXELS, 255, WIDTH * HEIGHT * sizeof(Uint32)); 
 
           	FRAME_COUNTER=0;
+            CYCLE_COUNTER=0;
 		    FPS =0;
+            CyclePerSecond=0;
+     LOOP(360){
+         Cos[count] = cos(RADIANS(count));
+         Sin[count] = sin(RADIANS(count));
+     }
+
+  //  for(int Angle =0; Angle > 360; Angle++)Cos[360] = cos(RADIANS(Angle));
+  //  for(int Angle =0; Angle > 360; Angle++)Sin[360] = sin(RADIANS(Angle));
+
+
 }
 
 // MESSAGE HANDLER RETURNS FALSE WHEN APPLICATION IS CLOSED OUT
  bool LOOP_GAME()
  {
 
-   	SCREEN->FRAME_COUNTER++;
-    //    float fps = 1000 / 60;
-        float delta = SDL_GetTicks() - SCREEN->TIMER;
-     //   if (delta < fps){SDL_Delay(fps - delta);Print(delta);}
-       // if ((delta * 1000) < fps) ; //SDL_Delay(fps - delta); 
-	    //if(SDL_GetTicks() - SCREEN->TIMER > 1000){
-		    SCREEN->FPS = 1000 / delta ;//SDL_GetTicks() - SCREEN->TIMER/1000 ;////SCREEN->FRAME_COUNTER ;// / (
-
-			SCREEN->TIMER = SDL_GetTicks();
-
+  	SCREEN->CYCLE_COUNTER++;
+         float delta = SDL_GetTicks() - SCREEN->CYCLE_TIMER;
+	   SCREEN->CyclePerSecond = 1000 / delta ;
+  
+		SCREEN->CYCLE_TIMER = SDL_GetTicks();
+ 
 
 	    bool leftMouseButtonDown = false;
   		SDL_PollEvent(&SCREEN->EVENT);
@@ -120,6 +129,16 @@ WINDOW::WINDOW(int x,int y,int width,int height,char *title){
 
 // CLEARS AND DISPLAYS THE BACKBUFFER
 void CLS(){
+       	SCREEN->FRAME_COUNTER++;
+    //    float fps = 1000 / 60;
+        float delta = SDL_GetTicks() - SCREEN->TIMER;
+     //   if (delta < fps){SDL_Delay(fps - delta);Print(delta);}
+       // if ((delta * 1000) < fps) ; //SDL_Delay(fps - delta); 
+	    //if(SDL_GetTicks() - SCREEN->TIMER > 1000){
+		    SCREEN->FPS = 1000 / delta ;//SDL_GetTicks() - SCREEN->TIMER/1000 ;////SCREEN->FRAME_COUNTER ;// / (
+
+			SCREEN->TIMER = SDL_GetTicks();
+
                 //SDL_RenderClear(SCREEN->RENDER);
 				memset(SCREEN->WINDOW_PIXELS, 0, SCREEN->WIDTH * SCREEN->HEIGHT * sizeof(Uint32)); 
 
@@ -216,30 +235,33 @@ void BOX(int X1, int Y1, int X2, int Y2){
 void CIRCLE(int x, int y, float radius){
     float X1 = x + .5,Y1 =  + .5;
        for (float Angle =0;Angle < 360; Angle++){
-           X1 = x + radius * cos(RADIANS(Angle));
-           Y1 = y + radius * sin(RADIANS(Angle));
+           X1 = x + radius * _COS((int)Angle);
+           Y1 = y + radius * _SIN((int)Angle);
                SET_PIXEL(X1,Y1, SCREEN->DRAW_COLOR);
        }
 }
 
 void FILLED_CIRCLE(int x, int y, float radius){
     float X1 = x ,Y1 = y ;
+    unsigned long color = SCREEN->DRAW_COLOR;
      for(float r = 0;r < radius;r++){
          float Theta = (360 / (8 * r));
        for (float Angle =0;Angle < 360; Angle+= Theta){
-           X1 = x + r * cos(RADIANS(Angle));
-           Y1 = y + r * sin(RADIANS(Angle));
-               SET_PIXELII(X1,Y1, SCREEN->DRAW_COLOR);
+           X1 = x + r * _COS((int)(Angle));    //X1 = x + r * cos(RADIANS(Angle));
+           Y1 = y + r * _SIN((int)(Angle));    //Y1 = y + r * sin(RADIANS(Angle));
+
+           SET_PIXELII(X1,Y1, color);
        }
      }
 }
 
 void LINE2(int x,int y, float Angle,int Length){
          float Xpos = x,Ypos = y; 
+         unsigned long color = SCREEN->DRAW_COLOR;
      LOOP(Length){
-          Xpos += cos(RADIANS(Angle)),
-          Ypos += sin(RADIANS(Angle));
-          SET_PIXELII(Xpos,Ypos,SCREEN->DRAW_COLOR);
+          Xpos += _COS((int)(Angle)),
+          Ypos += _SIN((int)(Angle));
+          SET_PIXELII(Xpos,Ypos,color);
      }
 }
 
@@ -260,7 +282,7 @@ void LINE(int x1,int y1,int x2,int y2)
            x=x2; y=y2;
            xe=x1;
       }
-      SET_PIXEL(x,y,c);
+      SET_PIXELII(x,y,c);
       for(i=0;x<xe;i++){
            x=x+1;
            if(px<0){
@@ -273,7 +295,7 @@ void LINE(int x1,int y1,int x2,int y2)
             }
             px=px+2*(dy1-dx1);
            }
-           SET_PIXEL(x,y,c);
+           SET_PIXELII(x,y,c);
       }
  }else{
   if(dy>=0){
@@ -285,7 +307,7 @@ void LINE(int x1,int y1,int x2,int y2)
        y=y2;
        ye=y1;
   }
-  SET_PIXEL(x,y,c);
+  SET_PIXELII(x,y,c);
   for(i=0;y<ye;i++){
        y=y+1;
        if(py<=0){
@@ -298,7 +320,7 @@ void LINE(int x1,int y1,int x2,int y2)
         }
              py=py+2*(dx1-dy1);
        }
-       SET_PIXEL(x,y,c);
+       SET_PIXELII(x,y,c);
   }
  }
 }

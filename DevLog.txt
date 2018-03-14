@@ -18,7 +18,99 @@ think about how I plan to set the inputs of the network up so that they are all 
 
 
 
+#if 0
+                         //Creature.cells[1].Force.X += 50*((RANDOM(2) - 1)); // c.Brain.Layers[2].Neurons[0].Value;//
+                         //Creature.cells[1].Force.Y += 50*((RANDOM(2) - 1)); //c.Brain.Layers[2].Neurons[0].Value;;//
+                         //Creature.cells[2].Brain.Layers[0].Neurons[0].Value = RANDOM(1);// - 40;
+#endif
+     
+	 
+	            
+#if 0   // For drawing the screen buffer directly to the screen for debugging uses.
+       FOR_LOOP(x,WORLD.Size.Width){
+                  FOR_LOOP(y,WORLD.Size.Height){
+                        if(WORLD.CheckSpace( x, y)!=0) SET_PIXEL(x, y,WORLD.CheckSpace( x, y));
+                  }
+       } 
+#endif
 
+
+
+
+
+
+//Organism *Make_Copy(Organism Parent)
+//{
+//    Organism *temp = new Organism(Parent.Number_of_Cells);
+//   *temp = Parent;
+//    return temp;
+//}
+//
+void Mutate(Organism &Host, Organism Parent)
+{
+    
+    
+    Host.Number_of_Cells = Parent.Number_of_Cells;
+    Host.cells.resize(Parent.Number_of_Cells);
+    Host.cells = Parent.cells;
+    
+    
+    Host.Velocity.X = 0;
+    Host.Velocity.Y = 0;
+    Host.Distance_moved = 0;   
+    
+    
+    FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+        
+        Host.cells[cellcount].Offset =  Host.cells[cellcount].Starting;
+        Host.cells[cellcount].Velocity.X = 0;
+        Host.cells[cellcount].Velocity.Y = 0;
+        Host.cells[cellcount].Speed = 0;
+        Host.cells[cellcount].Force.X = 0;
+        Host.cells[cellcount].Force.Y = 0;
+        Host.cells[cellcount].Acceleration.X = 0;   
+        Host.cells[cellcount].Angle=0;
+        Host.cells[cellcount].Mass = Parent.cells[cellcount].Mass;
+        Host.cells[cellcount].Acceleration.Y = 0;   
+        Host.cells[cellcount].Parent = &Host;  
+
+        Host.cells[cellcount].Brain.Layers[0] = Parent.cells[cellcount].Brain.Layers[0];
+        
+        Host.cells[cellcount].Brain.Layers[0].Neurons[0].Value = 0;
+        Host.cells[cellcount].Brain.Layers[0].Neurons[1].Value = 0;
+        Host.cells[cellcount].Brain.Layers[0].Neurons[2].Value = 0;
+        
+        Host.cells[cellcount].Brain.Layers[1] = Parent.cells[cellcount].Brain.Layers[1];
+        Host.cells[cellcount].Brain.Layers[1].Neurons[0].Value = 0;
+        Host.cells[cellcount].Brain.Layers[1].Neurons[1].Value = 0;
+        Host.cells[cellcount].Brain.Layers[1].Neurons[2].Value = 0;
+        Host.cells[cellcount].Brain.Layers[1].Neurons[3].Value = 0;
+        Host.cells[cellcount].Brain.Layers[1].Neurons[4].Value = 0;
+        
+         FOR_LOOP(HNeuron, Parent.cells[cellcount].Brain.Layers[1].Number_of_Neurons)
+         {
+         
+                 FOR_LOOP(HSynapses, Parent.cells[cellcount].Brain.Layers[0].Number_of_Neurons){
+                     Host.cells[cellcount].Brain.Layers[1].Neurons[HNeuron].Synapses[HSynapses].Weight += ((RANDOM(2)-1) / 100);
+                 }
+         }
+         
+         Host.cells[cellcount].Brain.Layers[2] = Parent.cells[cellcount].Brain.Layers[2];
+         Host.cells[cellcount].Brain.Layers[2].Neurons[0].Value = 0;
+         Host.cells[cellcount].Brain.Layers[2].Neurons[1].Value = 0;
+         
+         FOR_LOOP(ONeuron , Parent.cells[cellcount].Brain.Layers[2].Number_of_Neurons)
+         {
+                 FOR_LOOP(OSynapses,Parent.cells[cellcount].Brain.Layers[1].Number_of_Neurons){
+                      Host.cells[cellcount].Brain.Layers[2].Neurons[ONeuron].Synapses[OSynapses].Weight += ((RANDOM(2)-1)/ 100);
+                 }
+         }
+     }
+    
+}
+//extern Organism *Make_Copy(const Organism Clone);
+//extern Organism *Mutate   (Organism Parent);
+//extern void Mutate(Organism &Host, Organism Parent);
 
 
 
@@ -681,6 +773,83 @@ Cell::Cell(const Cell &other){
 
 
 
+   int numcells =  Parent.Number_of_Cells;
+
+    Organism *ret = new Organism(numcells);
+    
+    
+    ret->Number_of_Cells =(0);
+    ret->Distance_moved =(0.0);
+
+    ret->Position.X = ret->Potential.X =  (rand()%SCREENWIDTH  / 2) + 100; // Parent.Position.X; //  
+    ret->Position.Y = ret->Potential.Y = (rand()%SCREENHEIGHT / 2) + 100 ; //  Parent.Position.Y; //
+    ret->Velocity.X = ret->Velocity.Y = 0;
+
+    ret->Starting.X = ret->Position.X;
+    ret->Starting.Y = ret->Position.Y;
+
+
+
+    FOR_LOOP(Cellcount, Parent.Number_of_Cells){
+        Cell *temp = new Cell(ret);
+        temp->Color = Parent.cells[Cellcount].Color;
+        temp->Offset.X = Parent.cells[Cellcount].Offset.X + (RANDOM(1) - .5);
+        temp->Offset.Y = Parent.cells[Cellcount].Offset.Y + (RANDOM(1) - .5);
+        ret->cells[Cellcount] = *temp;
+    }
+
+   FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+      FOR_LOOP(edgecount, Parent.cells.size()){  // MAKE EDGES CONNECTING THE OTHER CELLS
+             if(edgecount != cellcount){
+                  int cnum  = Parent.cells[cellcount].edges[edgecount].Parent_ID;//rand()%numcells;
+                  int cnum2 = Parent.cells[cellcount].edges[edgecount].Child_ID;//rand()%numcells;
+
+                      ret->cells[cnum ].edges.push_back(Edge(&ret->cells[cnum ], ret->cells[cnum2], RANDOM(1)));  
+                      ret->cells[cnum2].edges.push_back(Edge(&ret->cells[cnum2], ret->cells[cnum ], RANDOM(1)));  
+             }
+       }
+   }
+      
+   for(Cell &C : ret->cells){
+      int  I = 3, 
+           H = 5, 
+           O = 2; 
+           Net *temp = new  Net(I,H,O); 
+           C.Brain   = *temp; 
+   }
+
+
+    FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+        ret->cells[cellcount].Brain.Layers[0] = Parent.cells[cellcount].Brain.Layers[0];
+    }
+
+    FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+        ret->cells[cellcount].Brain.Layers[1] = Parent.cells[cellcount].Brain.Layers[1];
+        FOR_LOOP(Hcount, ret->cells[cellcount].Brain.Layers[1].Number_of_Neurons){ // FOR EACH CELL....
+            FOR_LOOP(SynCount, ret->cells[cellcount].Brain.Layers[0].Number_of_Neurons){
+                ret->cells[cellcount].Brain.Layers[1].Neurons[Hcount].Synapses[SynCount].Weight = Parent.cells[cellcount].Brain.Layers[1].Neurons[Hcount].Synapses[SynCount].Weight;
+            }
+        }
+    }
+
+    FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+        ret->cells[cellcount].Brain.Layers[2] = Parent.cells[cellcount].Brain.Layers[2];
+        FOR_LOOP(Ocount, ret->cells[cellcount].Brain.Layers[2].Number_of_Neurons){ // FOR EACH CELL....
+            FOR_LOOP(SynCount, ret->cells[cellcount].Brain.Layers[1].Number_of_Neurons){
+                ret->cells[cellcount].Brain.Layers[2].Neurons[Ocount].Synapses[SynCount].Weight = Parent.cells[cellcount].Brain.Layers[2].Neurons[Ocount].Synapses[SynCount].Weight;
+            }
+        }
+    }
+
+    //RANDOM(1) - .5;
+
+
+   // FOR_LOOP(Ocount, Parent.Number_of_Cells){ // FOR EACH CELL....
+  //      ret->cells[cellcount].Brain.Layers[2] = Parent.cells[cellcount].Brain.Layers[2];
+  //  }
+//
+
+    return ret;
 
 
 
@@ -690,3 +859,269 @@ Cell::Cell(const Cell &other){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/*
+
+Organism::Organism(Organism const &Parent , float Mutation_rate){
+    
+this->Number_of_Cells = Parent.Number_of_Cells;
+this->cells.resize(Parent.Number_of_Cells);
+this->cells = Parent.cells;
+this->Position = this->Position;
+
+this->Velocity.X = 0;
+this->Velocity.Y = 0;
+this->Distance_moved = 0;   
+
+
+ FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+
+     this->cells[cellcount].Offset =  this->cells[cellcount].Starting;
+this->cells[cellcount].Velocity.X = 0;
+this->cells[cellcount].Velocity.Y = 0;
+this->cells[cellcount].Speed = 0;
+this->cells[cellcount].Force.X = 0;
+this->cells[cellcount].Force.Y = 0;
+this->cells[cellcount].Acceleration.X = 0;   
+this->cells[cellcount].Angle=0;
+this->cells[cellcount].Mass = Parent.cells[cellcount].Mass;
+this->cells[cellcount].Acceleration.Y = 0;   
+ this->cells[cellcount].Parent = this;  
+              //  Parent.Offset   += Parent.Velocity;     // Change in Position over time equals Velocity   
+                
+              //  Parent.Force.X = 0; Parent.Force.Y = 0;
+
+
+
+
+this->cells[cellcount].Brain.Layers[0] = Parent.cells[cellcount].Brain.Layers[0];
+
+     this->cells[cellcount].Brain.Layers[0].Neurons[0].Value = 0;
+     this->cells[cellcount].Brain.Layers[0].Neurons[1].Value = 0;
+     this->cells[cellcount].Brain.Layers[0].Neurons[2].Value = 0;
+
+this->cells[cellcount].Brain.Layers[1] = Parent.cells[cellcount].Brain.Layers[1];
+     this->cells[cellcount].Brain.Layers[1].Neurons[0].Value = 0;
+     this->cells[cellcount].Brain.Layers[1].Neurons[1].Value = 0;
+     this->cells[cellcount].Brain.Layers[1].Neurons[2].Value = 0;
+     this->cells[cellcount].Brain.Layers[1].Neurons[3].Value = 0;
+     this->cells[cellcount].Brain.Layers[1].Neurons[4].Value = 0;
+
+         FOR_LOOP(HNeuron, Parent.cells[cellcount].Brain.Layers[1].Number_of_Neurons)
+         {
+
+                 FOR_LOOP(HSynapses, Parent.cells[cellcount].Brain.Layers[0].Number_of_Neurons){
+                     this->cells[cellcount].Brain.Layers[1].Neurons[HNeuron].Synapses[HSynapses].Weight += ((RANDOM(2)-1) / 10);
+                 }
+         }
+
+this->cells[cellcount].Brain.Layers[2] = Parent.cells[cellcount].Brain.Layers[2];
+         this->cells[cellcount].Brain.Layers[2].Neurons[0].Value = 0;
+         this->cells[cellcount].Brain.Layers[2].Neurons[1].Value = 0;
+
+         FOR_LOOP(ONeuron , Parent.cells[cellcount].Brain.Layers[2].Number_of_Neurons)
+         {
+                 FOR_LOOP(OSynapses,Parent.cells[cellcount].Brain.Layers[1].Number_of_Neurons){
+                      this->cells[cellcount].Brain.Layers[2].Neurons[ONeuron].Synapses[OSynapses].Weight += ((RANDOM(2)-1)/ 10);
+                 }
+         }
+ }
+}
+
+
+
+/*
+Organism::Organism(Organism const &Parent)
+{
+    float POSX=  this->Position.X ,
+          POSY=  this->Position.Y;
+ // Organism *temp = new Organism(Parent.Number_of_Cells);
+  *this = Parent;
+
+   this->Position.X = POSX ;
+   this->Position.X = POSY;
+ // temp->Number_of_Cells = Parent.Number_of_Cells;
+ 
+
+}
+
+
+
+
+
+
+// CHANGE THIS FUNCTION IN THE FUTURE SO THAT PARENT->NUMBEROFCELLS Is Accessed once and applied to a Variable
+//
+//  int numcells =  Parent.Number_of_Cells;
+//
+///  Organism *ret = new Organism(numcells);
+//
+//
+//Host.Number_of_Cells =(0);
+//Host.Distance_moved =(0.0);
+//
+//Host.Position.X = Host.Potential.X =  Parent.Position.X; //  (rand()%SCREENWIDTH  / 2) + 100; // 
+//Host.Position.Y = Host.Potential.Y =   Parent.Position.Y; //(rand()%SCREENHEIGHT / 2) + 100 ; //
+//Host.Velocity.X = Host.Velocity.Y = 0;
+//
+//Host.Starting.X = Host.Position.X;
+//Host.Starting.Y = Host.Position.Y;
+///
+///FOR_LOOP(Cellcount, Parent.Number_of_Cells){
+///
+//Cell *temp = new Cell(ret);
+//temp->Color = Parent.cells[Cellcount].Color;
+//temp->Offset = Parent.cells[Cellcount].Starting;
+//temp->Number_of_edges = 0;
+//Host.cells[Cellcount] = *temp;
+//delete(temp);
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+//    Host.cells[cellcount].Brain.Layers[0] = Parent.cells[cellcount].Brain.Layers[0];
+//}
+//FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+//    Host.cells[cellcount].Brain.Layers[1] = Parent.cells[cellcount].Brain.Layers[1];
+//}
+//FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+//    Host.cells[cellcount].Brain.Layers[2] = Parent.cells[cellcount].Brain.Layers[2];
+//}
+//
+
+
+  // 
+  // FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+  //     ret->cells[cellcount].Brain.Layers[0] = Parent.cells[cellcount].Brain.Layers[0];
+  // }
+  //
+  //
+  // FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+  //     ret->cells[cellcount].Brain.Layers[1] = Parent.cells[cellcount].Brain.Layers[1];
+  //         FOR_LOOP(HNeuron ,ret->cells[cellcount].Brain.Layers[1].Number_of_Neurons)
+  //         {
+  //                 FOR_LOOP(HSynapses, ret->cells[cellcount].Brain.Layers[0].Number_of_Neurons){
+  //                    ret->cells[cellcount].Brain.Layers[1].Neurons[HNeuron].Synapses[HSynapses].Weight += (RANDOM(2)-1) / 10;
+  //                 }
+  //         }
+  // }
+  //
+  //
+  // FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+  //     ret->cells[cellcount].Brain.Layers[2] = Parent.cells[cellcount].Brain.Layers[2];
+  //         FOR_LOOP(ONeuron ,ret->cells[cellcount].Brain.Layers[2].Number_of_Neurons)
+  //         {
+  //                 FOR_LOOP(OSynapses, ret->cells[cellcount].Brain.Layers[1].Number_of_Neurons){
+  //                     ret->cells[cellcount].Brain.Layers[2].Neurons[ONeuron].Synapses[OSynapses].Weight += (RANDOM(2)-1)/ 10;
+  //                 }
+  //         }
+  // }
+  //
+  //
+  //
+
+//    return ret;
+
+       // temp->cells[cellcount].Brain.Layers[0] = Parent.cells[cellcount].Brain.Layers[0];
+       // temp->cells[cellcount].Brain.Layers[1] = Parent.cells[cellcount].Brain.Layers[1];
+       // temp->cells[cellcount].Brain.Layers[2] = Parent.cells[cellcount].Brain.Layers[2];
+
+
+ //for(Cell &C : Host.cells){
+ //        Net *temp = new  Net(3,5,2); 
+ //        C.Brain   = *temp; 
+ //        delete (temp);
+ //}
+ //
+
+
+#if 0
+    int numcells =  Parent.Number_of_Cells;
+
+    Organism *ret = new Organism(numcells);
+    
+    
+    ret->Number_of_Cells =(0);
+    ret->Distance_moved =(0.0);
+
+    ret->Position.X = ret->Potential.X =  Parent.Position.X; //  (rand()%SCREENWIDTH  / 2) + 100; // 
+    ret->Position.Y = ret->Potential.Y =   Parent.Position.Y; //(rand()%SCREENHEIGHT / 2) + 100 ; //
+    ret->Velocity.X = ret->Velocity.Y = 0;
+
+    ret->Starting.X = ret->Position.X;
+    ret->Starting.Y = ret->Position.Y;
+
+
+
+    FOR_LOOP(Cellcount, Parent.Number_of_Cells){
+             Cell *temp = new Cell(ret);
+
+             temp->Color = Parent.cells[Cellcount].Color;
+             temp->Offset = Parent.cells[Cellcount].Starting;
+             temp->Number_of_edges = 0;
+
+             ret->cells[Cellcount] = *temp;
+    }
+
+   FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+      FOR_LOOP(edgecount, Parent.cells[cellcount].Number_of_edges){  // MAKE EDGES CONNECTING THE OTHER CELLS
+             if(edgecount != cellcount){
+                  int cnum  = Parent.cells[cellcount].edges[edgecount].Parent_ID;//rand()%numcells;
+                  int cnum2 = Parent.cells[cellcount].edges[edgecount].Child_ID;//rand()%numcells;
+
+                      ret->cells[cnum ].edges.push_back(Edge(&ret->cells[cnum ], &ret->cells[cnum2], RANDOM(1)));  
+                      ret->cells[cnum2].edges.push_back(Edge(&ret->cells[cnum2], &ret->cells[cnum ], RANDOM(1)));  
+
+                      ret->cells[cnum ].Number_of_edges++;
+                      ret->cells[cnum2].Number_of_edges++;
+             }
+       }
+   }
+      
+   for(Cell &C : ret->cells){
+      int  I = 3, 
+           H = 5, 
+           O = 2; 
+           Net *temp = new  Net(I,H,O); 
+           C.Brain   = *temp; 
+   }
+
+
+    FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+        ret->cells[cellcount].Brain.Layers[0] = Parent.cells[cellcount].Brain.Layers[0];
+    }
+    FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+        ret->cells[cellcount].Brain.Layers[1] = Parent.cells[cellcount].Brain.Layers[1];
+    }
+    FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+        ret->cells[cellcount].Brain.Layers[2] = Parent.cells[cellcount].Brain.Layers[2];
+    }
+#endif

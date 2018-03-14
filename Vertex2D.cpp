@@ -68,7 +68,10 @@ Vector2D operator -(Vector2D left, double right){return left.subtract(right);}
 Vector2D operator /(Vector2D left, double right){return left.divide(right);}
 Vector2D operator *(Vector2D left, double right){return left.multiply(right);}
 
-Vector2D& Vector2D::operator =(double right){Vector2D ret; ret.X = right; ret.Y = right; return ret;}
+
+
+Vector2D& Vector2D::operator =(double right){return this->assign(right);}
+
 
 Vector2D& Vector2D::operator +=(double other){return add(other);}
 Vector2D& Vector2D::operator -=(double other){return subtract(other);}
@@ -78,10 +81,10 @@ Vector2D& Vector2D::operator /=(double other){return divide(other);}
 //__________________________________________________________________________________________________________________________________
 
 
-
-
-
-
+Vector2D& Vector2D::assign(double other){
+    X = other; Y = other;
+    return *this;
+}
 
 
 bool Vector2D::operator ==(const Vector2D& other){return X == other.X && Y == other.Y;}
@@ -117,7 +120,7 @@ inline double GetAngle(Vector2D A, Vector2D B)
 
 
 
-Vector2D Get_Displacement(Vector2D A, Vector2D B){
+inline Vector2D Get_Displacement(Vector2D A, Vector2D B){
     Vector2D ret;
     ret.Y = A.Y - B.Y;
     ret.X = A.X - B.X;

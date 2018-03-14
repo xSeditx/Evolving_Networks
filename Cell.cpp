@@ -1,4 +1,4 @@
-//                                                                                                                                                                                                                                                                                                                                       
+﻿//                                                                                                                                                                                                                                                                                                                                       
 //                                                                                                                                                                                                                                                                                   
 //   Cell class for building and manipulating organisms                                                                                                                                                                                                                                                                    
 //                                                                                                                                                                                                                                                                                   
@@ -21,44 +21,20 @@
 
 using namespace std;
 
-    Cell::~Cell(){}
-    Edge::~Edge(){}
-Organism::~Organism(){}
-
-
-    Cell::Cell()      : Number_of_edges(0),Angle(0),Speed(0){}
-    Edge::Edge()     {}
-Organism::Organism() {}
-
-
-void Cell::See(){
-    float Xx = 0,
-          Yy = 0;
-
-    float X = Offset.X + Parent->Position.X,
-          Y = Offset.Y + Parent->Position.Y;
-      int Ang = Angle;
-       //   for(int Ang = (Angle - 30);Ang < (Angle + 30); Ang +=10){
-                  for(float dist = 0;dist < 8; dist++){
-                          Xx = X + dist * cos(RADIANS(Ang));
-                          Yy = Y + dist * sin(RADIANS(Ang));
-                          SET_PIXEL(Xx,Yy,RGB(255,255,255));
-                  }
-         // }
-}
-
-
-
-
 //=============================================================================================================================================================
-//                                                          CONSTRUCTORS FUNCTIONS                                                                                     
+//                                                         CELL CLASS                                                                                
 //=============================================================================================================================================================
+
+Cell::Cell()      : Number_of_edges(0),Angle(0),Speed(0){PTR_THIS = this;}
+Cell::~Cell(){}
+
 Cell::Cell(Organism *parent){
 
-  //  parent->Number_of_Cells++;
     ID =  parent->Number_of_Cells++;
-    Offset.X = Potential.X  = RANDOM(300);
-    Offset.Y = Potential.Y  = RANDOM(300);
+    Offset.X = Potential.X  =  RANDOM(300);
+    Offset.Y = Potential.Y  =  RANDOM(300);
+    Starting.X = Offset.X ;
+    Starting.Y = Offset.Y ;
 
     Velocity  = 0;
     Force     = 0;
@@ -67,115 +43,201 @@ Cell::Cell(Organism *parent){
     Angle = RANDOM(0);
     Friction  = RANDOM(1);
 
-    Color = RGB(RANDOM(255),
-                    RANDOM(255),
-                    RANDOM(255));
+    Color = RGB((55+RANDOM(200)),
+                (55+RANDOM(200)),
+                (55+RANDOM(200)));
 
-    if (Color <= RGB(55,55,55))Color = RGB(255,255,255);
-    Mass = 10;
+    Mass   = 10; // + (rand()%3);
     Parent = parent;
 
+    PTR_THIS = this; 
 }
-Edge::Edge(Cell *parent, Cell &other, unsigned char tension){
-        parent->Number_of_edges++;
-        Parent_ID = parent->ID;
-        Child_ID = other.ID;
-        RestDistance = Get_Displacement( other.Offset, parent->Offset);
-        second   = &other;
-        Distance =  Get_Distance(*parent, other); 
-        Tension  =  tension;
-        Angle    =  0;
-        Color    =  parent->Color; 
-        Displacement = 0;
+
+void Cell::See(){
+
+    float Xx = 0,
+          Yy = 0;
+
+    float X = Offset.X + Parent->Potential.X,
+          Y = Offset.Y + Parent->Potential.Y;
+      int Ang = Angle;
+      int FOV = 10;
+         // for(int Ang = (Angle - FOV);Ang < (Angle + FOV); Ang +=10){
+                  for(float dist = 0;dist < 8; dist++){
+                          Xx = X + dist * _COS(Ang);
+                          Yy = Y + dist * _SIN(Ang);
+                          SET_PIXELII(Xx,Yy,RGB(255,255,255));
+                  }
+        //  }
 }
-Organism::Organism(unsigned char numcells)
+
+//=============================================================================================================================================================
+//                                                         ORGANISM CLASS                                                                              
+//=============================================================================================================================================================
+
+
+
+
+Organism::~Organism(){}
+
+Organism::Organism() {}
+Organism::Organism(unsigned char numcells , int x, int y)   
         :Number_of_Cells(0) ,  Distance_moved(0.0)
 {
-    Position.X = Potential.X =  (rand()%SCREENWIDTH  / 2) + 100;  
-    Position.Y = Potential.Y =  (rand()%SCREENHEIGHT / 2) + 100 ;
-    Velocity.X = Velocity.Y = 0;
+    Position.X = Starting.X = Potential.X = x ;   
+    Position.Y = Starting.Y = Potential.Y = y ;
+    Velocity.X = Velocity.Y  =  0;
 
-    Starting.X = Position.X;
-    Starting.Y = Position.Y;
-  
 
     FOR_LOOP(count, numcells){
-        cells.push_back(Cell(this));
+              cells.push_back(Cell(this));
     }
 
-    float     X =  0, Y =  0, 
-          angle =  0, Theta =  360 / Number_of_Cells,
-          dist =  25;
+    float     X  =  Position.X, 
+              Y  =  Position.Y, 
 
+              Xx = 0, Yy = 0,
+
+              angle =  0, Theta =  360 / Number_of_Cells,
+              dist =  15;
+    Xx = X;
+    Yy = Y;
     for(Cell &c : cells){
-        angle+=Theta;
-        X += dist * cos(RADIANS(angle));    Y += dist * sin(RADIANS(angle));
-        c.Offset.X =  X;                    c.Offset.Y =  Y;                        // rand()%(int)dist;//   // rand()%(int)dist;//
-    c.Number_of_edges = 0;
+              angle+=Theta;
+              Xx = X + dist * cos(RADIANS(angle));
+              Yy = Y + dist * sin(RADIANS(angle));
+              c.Offset.X =  Xx - Position.X;                 c.Offset.Y =  Yy - Position.Y;                        // rand()%(int)dist;//   // rand()%(int)dist;//
+              c.Starting = c.Offset;
+              c.Number_of_edges = 0;
     }
 
    FOR_LOOP(cellcount, numcells){   // FOR EACH CELL.....
        FOR_LOOP(edgecount, rand()%numcells){  // MAKE EDGES CONNECTING THE OTHER CELLS
              if(edgecount != cellcount){
-                  int cnum  = rand()%numcells;
-                  int cnum2 = rand()%numcells;
-
-                      cells[cnum ].edges.push_back(Edge(&cells[cnum ], cells[cnum2], RANDOM(1)));  
-                      cells[cnum2].edges.push_back(Edge(&cells[cnum2], cells[cnum ], RANDOM(1)));  
-                      cells[cnum].Number_of_edges++;
-                      cells[cnum2].Number_of_edges++;
+                      int cnum  = rand()%numcells;
+                      int cnum2 = rand()%numcells;
+                     
+                          cells[cnum ].edges.push_back(Edge(&cells[cnum ], &cells[cnum2], RANDOM(1)));  
+                          cells[cnum2].edges.push_back(Edge(&cells[cnum2], &cells[cnum ], RANDOM(1)));  
+                          cells[cnum ].Number_of_edges++;
+                          cells[cnum2].Number_of_edges++;
              }
        }
    }
 
    for(Cell &C : cells){
-      int  I = 3, 
-           H = 5, 
-           O = 2; 
-           Net *temp = new  Net(I,H,O); 
-           C.Brain   = *temp; 
-           C.Number_of_edges /= 2;
+        int  I = 3, 
+             H = 5, 
+             O = 2; 
+             Net *temp = new  Net(I,H,O); 
+             C.Brain   = *temp; 
+            // C.Number_of_edges /= 2;
    }
 }
+Organism* Organism::Copy(Organism *Parent)   
+{
+    *this = *Parent;
+    return this;
+}
+Organism* Organism::Mutate(Organism Parent)  
+{
+    
+    
+    this->Number_of_Cells = Parent.Number_of_Cells;
+    this->cells.resize(Parent.Number_of_Cells);
+    this->cells = Parent.cells;
+    
+    
+    this->Velocity.X = 0;
+    this->Velocity.Y = 0;
+    this->Distance_moved = 0;   
+    
+    
+    FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
+        
+        this->cells[cellcount].Offset =  this->cells[cellcount].Starting;
+        this->cells[cellcount].Velocity.X = 0;
+        this->cells[cellcount].Velocity.Y = 0;
+        this->cells[cellcount].Speed = 0;
+        this->cells[cellcount].Force.X = 0;
+        this->cells[cellcount].Force.Y = 0;
+        this->cells[cellcount].Acceleration.X = 0;   
+        this->cells[cellcount].Angle=0;
+        this->cells[cellcount].Mass = Parent.cells[cellcount].Mass;
+        this->cells[cellcount].Acceleration.Y = 0;   
+        this->cells[cellcount].Parent = this;  
 
+        this->cells[cellcount].Brain.Layers[0] = Parent.cells[cellcount].Brain.Layers[0];
+        
+        this->cells[cellcount].Brain.Layers[0].Neurons[0].Value = 0;
+        this->cells[cellcount].Brain.Layers[0].Neurons[1].Value = 0;
+        this->cells[cellcount].Brain.Layers[0].Neurons[2].Value = 0;
+        
+        this->cells[cellcount].Brain.Layers[1] = Parent.cells[cellcount].Brain.Layers[1];
+        this->cells[cellcount].Brain.Layers[1].Neurons[0].Value = 0;
+        this->cells[cellcount].Brain.Layers[1].Neurons[1].Value = 0;
+        this->cells[cellcount].Brain.Layers[1].Neurons[2].Value = 0;
+        this->cells[cellcount].Brain.Layers[1].Neurons[3].Value = 0;
+        this->cells[cellcount].Brain.Layers[1].Neurons[4].Value = 0;
+        
+         FOR_LOOP(HNeuron, Parent.cells[cellcount].Brain.Layers[1].Number_of_Neurons)
+         {
+         
+                 FOR_LOOP(HSynapses, Parent.cells[cellcount].Brain.Layers[0].Number_of_Neurons){
+                     this->cells[cellcount].Brain.Layers[1].Neurons[HNeuron].Synapses[HSynapses].Weight +=  ((RANDOM(2)-1) / 10);
+                 }
+         }
+         
+         this->cells[cellcount].Brain.Layers[2] = Parent.cells[cellcount].Brain.Layers[2];
+         this->cells[cellcount].Brain.Layers[2].Neurons[0].Value = 0;
+         this->cells[cellcount].Brain.Layers[2].Neurons[1].Value = 0;
+         
+         FOR_LOOP(ONeuron , Parent.cells[cellcount].Brain.Layers[2].Number_of_Neurons)
+         {
+                 FOR_LOOP(OSynapses,Parent.cells[cellcount].Brain.Layers[1].Number_of_Neurons){
+                      this->cells[cellcount].Brain.Layers[2].Neurons[ONeuron].Synapses[OSynapses].Weight +=  ((RANDOM(2)-1)/ 10);
+                 }
+         }
+     }
+    return this;
+}
 
-
-//=============================================================================================================================================================
-//                                                      CLASS METHODS                                                                                          
-//=============================================================================================================================================================
-
-void Organism::Update()
+void Organism::Update(float Time_Step)
 {
     
       float 
       DELTA_TIME     = 0, 
       DELTA_VELOCITY = 0;
     
-      DELTA_TIME = SDL_GetTicks()- SCREEN->TIME;  SCREEN->TIME = SDL_GetTicks();
-
+      DELTA_TIME =(SDL_GetTicks()- SCREEN->TIME) / 10;  
+      SCREEN->TIME = SDL_GetTicks();
 
       float Xmove = 0, Ymove = 0;
 
+      //Print(DELTA_TIME);
         for(Cell &Parent:cells){ // Cycle Every Cell
-                WORLD.SetSpace(Position.X + Parent.Offset.X,Position.Y + Parent.Offset.Y,0);                                                                   
-                Parent.Acceleration = (Parent.Force) / Parent.Mass;  
-                Parent.Velocity += Parent.Acceleration; // Change in Velocity equals Acceleration    
-                Parent.Offset   += Parent.Velocity;     // Change in Position over time equals Velocity   
-                Parent.Force.X =0;
-                Parent.Force.Y =0;
-               WORLD.SetSpace(Position.X + Parent.Offset.X,Position.Y + Parent.Offset.Y,Parent.Color);  
-               Xmove += Position.X + Parent.Offset.X;
-               Ymove += Position.Y + Parent.Offset.Y;
-        }
-        Xmove /= Number_of_Cells;
-        Ymove /= Number_of_Cells;
-        FILLED_CIRCLE(Xmove,Ymove, 7);
-       Distance_moved =  sqrt(Squared(Xmove - Starting.X)  + Squared(Ymove - Starting.Y)); 
-      // Print(Distance_moved);
-       LINE2((10),(Starting.Y / 10),0, Distance_moved);
+                                                                             
+                Parent.Acceleration = ((Parent.Force) / Parent.Mass);  
+                Parent.Velocity += (Parent.Acceleration); // Change in Velocity equals Acceleration    
+                Parent.Offset   += Parent.Velocity ;     // Change in Position over time equals Velocity   
+                
+                Parent.Force.X = 0; Parent.Force.Y = 0;
 
-       //Parent.Brain.Layers[0].Neurons[0].Value = RANDOM(1);
-       // Parent.Brain.Layers[0].Neurons[1].Value = RANDOM(1);
+ 
+                Xmove += Parent.Offset.X;
+                Ymove += Parent.Offset.Y;
+        }
+
+        Xmove = Xmove / (Number_of_Cells);
+        Ymove = Ymove / (Number_of_Cells);
+        X = Xmove + Potential.X;
+        Y = Ymove + Potential.Y;
+       // FILLED_CIRCLE( X,Y, 14);
+
+        Potential.X = Xmove + Starting.X;
+        Potential.Y = Ymove + Starting.Y;
+        Distance_moved =  sqrt(Squared(X - Starting.X)  + Squared(Y -  Starting.Y)); 
+ 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         for(Cell &Parent:cells){ // Cycle Every Cell
@@ -186,17 +248,23 @@ void Organism::Update()
 
             for(Edge &Child: Parent.edges){ // For Every Cell Get and Set Information about all Connecting Cells.
           
-                  Child.Angle = GetAngle(Parent.Offset,  Child.second->Offset);
-                  
-                  Child.Displacement =  Get_Displacement(Child.second->Offset,Parent.Offset ) - Child.RestDistance; 
-                  Child.Distance     =  Get_Distance(Parent, *Child.second);
-                  float K = .1;
-                  Child.second->Force.X += -K * (Child.Displacement.X);   
-                  Child.second->Force.Y += -K * (Child.Displacement.Y);
+                  int off =  Child.Child_ID;
 
-                // Child.second->Brain.Layers[0].Neurons[2].Value = (Child.second->Angle) ; //Parent.Brain.Layers[2].Neurons[1].Value;
-                 Child.second->Brain.Layers[0].Neurons[1].Value = Child.second->Force.X; //Parent.Brain.Layers[2].Neurons[1].Value;
-                 Child.second->Brain.Layers[0].Neurons[0].Value = Child.second->Force.Y; //.Brain.Layers[2].Neurons[0].Value;
+                  Child.Angle = GetAngle(Parent.Offset,  cells[off].Offset);
+                  
+                  Child.Displacement =  Get_Displacement(cells[off].Offset,Parent.Offset ) - Child.RestDistance; 
+                  Child.Distance     =  Child.Get_Distance(cells[off]);
+
+                  float K = .1;
+                  cells[off].Force.X += -K * (Child.Displacement.X);   
+                  cells[off].Force.Y += -K * (Child.Displacement.Y);
+
+
+                  // acceleration = (−SpringStiffness ⁄ mass) * Position 
+
+
+                  cells[off].Brain.Layers[0].Neurons[1].Value = cells[off].Force.X; //Parent.Brain.Layers[2].Neurons[1].Value;
+                  cells[off].Brain.Layers[0].Neurons[0].Value = cells[off].Force.Y; //.Brain.Layers[2].Neurons[0].Value;
             }
         
 
@@ -206,107 +274,85 @@ void Organism::Update()
       }
 
 
-for(Cell &C: cells){
-C.Speed =   C.Brain.Layers[2].Neurons[0].Value * 30;
-C.Angle += (C.Brain.Layers[2].Neurons[1].Value * 5); // rand()%180;//
-C.Force.X += C.Speed * cos(RADIANS(C.Angle));
-C.Force.Y += C.Speed * sin(RADIANS(C.Angle));
-
+    for(Cell &C: cells){
+        C.Speed =   C.Brain.Layers[2].Neurons[0].Value * 30;
+        C.Angle += (C.Brain.Layers[2].Neurons[1].Value * 5); // rand()%180;//
+        C.Force.X += C.Speed * cos(RADIANS(C.Angle));
+        C.Force.Y += C.Speed * sin(RADIANS(C.Angle));
+    }
+   //  Draw();
 }
-//Print(cells[1].Brain.Layers[2].Neurons[0].Value);
-//Print(cells[1].Brain.Layers[2].Neurons[1].Value);
-//_____________________________________________________________________________________________________________________________________________________________
-//=============================================================================================================================================================
 
-}
 void Organism::Draw(){             /// WAIT WHY IS THIS NOT BEING CALLED AT ALL... DID I SHUT IT OFF????
 
-   for(Cell &Parent:cells){
-           for(Edge &Child: Parent.edges){
-
-            float x1 =  Parent.Offset.X + Position.X,
-                  y1 =  Parent.Offset.Y + Position.Y,
-                  x2 =  Child.second->Offset.X + Position.X,
-                  y2 =  Child.second->Offset.Y + Position.Y;
-            SET_DRAW_COLOR(Parent.Color);
+    FOR_LOOP(cellcount, Number_of_Cells){
+        FOR_LOOP(edgecount, cells[cellcount].Number_of_edges ){
+        
+            int Parent = cells[cellcount].edges[edgecount].Parent_ID;
+            int Child  = cells[cellcount].edges[edgecount].Child_ID;
+        
+            float x1 =  cells[cellcount].Offset.X + Potential.X,
+                  y1 =  cells[cellcount].Offset.Y + Potential.Y,
+        
+                  x2 =  (x1 + cells[Child].Offset.X + Potential.X )/ 2,
+                  y2 =  (y1 + cells[Child].Offset.Y + Potential.Y )/ 2;
+        
+        
+        
+            SET_DRAW_COLOR(cells[cellcount].Color);
+           // CIRCLE(X, Y,20);
+            //FILLED_CIRCLE(x1,y1,10);   
             LINE(x1,y1,x2,y2);
-           }
-    }
-
-    for(Cell &cell: cells)
-    {
-        float x = Position.X+ cell.Offset.X,
-              y = Position.Y+ cell.Offset.Y;
-      
-              SET_PIXEL(x,y,RGB(255,255,255));
+           // float angle =  GetAngle(cells[cellcount].Offset, cells[Child].Offset / 2), 
+           //       dist = cells[cellcount].edges[edgecount].Distance;
+           // LINE2(x1,y1,angle, dist  );
+        }
     }
 }
 
 
-float Get_Distance(const Cell &parent,const Cell &child){
-    float ret =  sqrt(Squared(parent.Offset.X - child.Offset.X)  + Squared(parent.Offset.Y - child.Offset.Y));
-    if(ret < 0) ret = 0; // HMMMMMMM
-    return ret;
+//void f2(const vector<int> & v)
+
+int Collision(Organism *parent, Organism *List[]){
+          float X = 0,
+                Y = 0;
+                X = parent->X,
+                Y = parent->Y;
+    FOR_LOOP(OrganismCount, 10){
+        if(List[OrganismCount] != parent){
+
+           // Print ("  ");
+          if(sqrt(Squared(List[OrganismCount]->Y - Y) +  Squared(List[OrganismCount]->X - parent->X)) < 30){
+            //  Print("Collision"); 
+            //  Print (OrganismCount);
+            
+          }
+        }
+    }
+    return 1;
 }
 
 
 
 
-Organism *Make_Copy(Organism Parent)
+
+
+//=============================================================================================================================================================
+//                                                      EDGE CLASS                                                                                          
+//=============================================================================================================================================================
+
+
+
+Edge::Edge(Cell *parent, Cell *other, unsigned char tension)
+    : Parent_ID ( parent->ID),  Child_ID (other->ID) , Tension( tension), Angle (0), Parent_ptr(parent),Child_ptr(other)
 {
-    int numcells =  Parent.Number_of_Cells;
-
-    Organism *ret = new Organism(numcells);
-    
-    
-    ret->Number_of_Cells =(0);
-    ret->Distance_moved =(0.0);
-
-    ret->Position.X = ret->Potential.X =  (rand()%SCREENWIDTH  / 2) + 100; // Parent.Position.X; //  
-    ret->Position.Y = ret->Potential.Y = (rand()%SCREENHEIGHT / 2) + 100 ; //  Parent.Position.Y; //
-    ret->Velocity.X = ret->Velocity.Y = 0;
-
-    ret->Starting.X = ret->Position.X;
-    ret->Starting.Y = ret->Position.Y;
-
-
-
-    FOR_LOOP(Cellcount, Parent.Number_of_Cells){
-        Cell *temp = new Cell(ret);
-        temp->Color = Parent.cells[Cellcount].Color;
-        temp->Offset = Parent.cells[Cellcount].Offset;
-        ret->cells[Cellcount] = *temp;
-    }
-
-   FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
-      FOR_LOOP(edgecount, Parent.cells[cellcount].Number_of_edges){  // MAKE EDGES CONNECTING THE OTHER CELLS
-             if(edgecount != cellcount){
-                  int cnum  = Parent.cells[cellcount].edges[edgecount].Parent_ID;//rand()%numcells;
-                  int cnum2 = Parent.cells[cellcount].edges[edgecount].Child_ID;//rand()%numcells;
-
-                      ret->cells[cnum ].edges.push_back(Edge(&ret->cells[cnum ], ret->cells[cnum2], RANDOM(1)));  
-                      ret->cells[cnum2].edges.push_back(Edge(&ret->cells[cnum2], ret->cells[cnum ], RANDOM(1)));  
-             }
-       }
-   }
-      
-   for(Cell &C : ret->cells){
-      int  I = 3, 
-           H = 5, 
-           O = 2; 
-           Net *temp = new  Net(I,H,O); 
-           C.Brain   = *temp; 
-   }
-
-
-    FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
-        ret->cells[cellcount].Brain.Layers[0] = Parent.cells[cellcount].Brain.Layers[0];
-    }
-    FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
-        ret->cells[cellcount].Brain.Layers[1] = Parent.cells[cellcount].Brain.Layers[1];
-    }
-    FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
-        ret->cells[cellcount].Brain.Layers[2] = Parent.cells[cellcount].Brain.Layers[2];
-    }
-    return ret;
+        RestDistance =  Get_Displacement( other->Offset, parent->Offset);
+        Distance     =  Get_Distance(*other); 
+        Displacement =  0;
 }
+Edge::~Edge(){}
+Edge::Edge() {}
+
+
+
+

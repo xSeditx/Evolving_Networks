@@ -42,22 +42,23 @@ public:
 //_____________________________________________________________________________________________________________________________________
 //_____________________________________________________________________________________________________________________________________
 
-        Vector2D& add       (double other);
-        Vector2D& subtract  (double other);
-        Vector2D& divide    (double other);
-        Vector2D& multiply  (double other);
-
-        friend Vector2D operator +(Vector2D left,double right);
-        friend Vector2D operator -(Vector2D left, double right);
-        friend Vector2D operator /(Vector2D left, double right);
-        friend Vector2D operator *(Vector2D left, double right);
-        
+        Vector2D& add       (double other); // USED FOR THE MANIPULATION OF BOTH ELEMENTS OF THE VECTOR WITH A SINGLE NUMBER
+        Vector2D& subtract  (double other); // 
+        Vector2D& divide    (double other); // USAGE:    VECTOR2D   = float VALUE
+        Vector2D& multiply  (double other); // RESULT:   VECTOR2D.X = float VALUE
+        Vector2D& assign    (double other); //           VECTOR2D.Y = float VALUE
+       
         Vector2D& operator =(double right);
-
         Vector2D& operator +=(double other);
         Vector2D& operator -=(double other);
         Vector2D& operator *=(double other);
         Vector2D& operator /=(double other);
+
+
+        friend Vector2D operator +(Vector2D left, double right);  //
+        friend Vector2D operator -(Vector2D left, double right);  //
+        friend Vector2D operator /(Vector2D left, double right);  //
+        friend Vector2D operator *(Vector2D left, double right);  //
 //_____________________________________________________________________________________________________________________________________
 //_____________________________________________________________________________________________________________________________________
 
@@ -66,4 +67,4 @@ public:
 
 extern inline double GetAngle (Vector2D A, Vector2D B);
 extern inline double Squared(double x);
-extern Vector2D Get_Displacement(Vector2D A, Vector2D B);
+extern inline Vector2D Get_Displacement(Vector2D A, Vector2D B);

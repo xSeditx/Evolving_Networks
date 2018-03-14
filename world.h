@@ -1,5 +1,5 @@
 
-#include <stdio.h>   
+#include <stdio.h>  
 #include <stdlib.h> 
 
 class World{
@@ -35,6 +35,7 @@ public:
           // Buffer[x + Size.Width * y] = value;
       }
 
+      vector<Organism>  Creatures;
 
           int *Buffer;
 };

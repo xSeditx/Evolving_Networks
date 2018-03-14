@@ -18,12 +18,24 @@
 #define LOOP(x)                   for(int count = 0; count < (x); count++)
 #define FOR_LOOP(x,c)             for(int x = 0; x < (c); x++)
 
-#define SCREENWIDTH        1260 //680 
-#define SCREENHEIGHT       920 //460 
+#define SCREENWIDTH        1280 //680 
+#define SCREENHEIGHT       960 //460 
 
 #define _LOOP_GAME  LOOP_GAME()        // This is being done for future compatibility with various Graphics Libraries
 #define _CLS              CLS()        //
 #define _SYNC            SYNC()        //
+
+#define _COS(a)       cos(RADIANS(a))  //Cos[(int)a]
+#define _SIN(a)       sin(RADIANS(a))  //Sin[(int)a]
+
+
+extern float Cos[360], 
+             Sin[360]; 
+                     
+
+// cos(RADIANS(a))
+//sin(RADIANS(a))
+
 
 class WINDOW{
 
@@ -66,7 +78,13 @@ public:
      double TIME;
 
     int   FRAME_COUNTER;
+    int   CYCLE_COUNTER;
+
+    int CyclePerSecond;
+
+    float CYCLE_TIMER;
 	float TIMER;
+
 };
  
 

@@ -29,9 +29,6 @@
 #define NUMBER_OF_NEURONS  2
 #define AMOUNT_FOOD        2200
 
-extern int CELLCOUNT,EDGECOUNT;
-extern int EDGECOPY, CELLCOPY;
-
 class Organism ; struct Edge; // Forward Declaration
 
 class Cell {
@@ -40,6 +37,7 @@ public:
    Cell(Organism *Parent);
   // Cell(const Cell &other);
     Vector2D      Offset,
+                  Starting,
                   Potential,
                   Velocity,          // Force = Mass * Acceleration
                   Acceleration,
@@ -50,8 +48,11 @@ public:
                   
     float         Angle,
                   Speed,
+                  Size,
                   Mass;
 
+
+    Cell *PTR_THIS;
     unsigned char Number_of_edges;
     unsigned long Color;
 
@@ -64,18 +65,30 @@ public:
     Net Brain;
 
     void See();
+    void Set_Position(int x, int y){
+        Offset.X   = x;
+        Offset.Y   = y;
+        Starting.X = x;
+        Starting.Y = y;
+    }
+
+    int Collision();
 };
+
+
+
+
+
+
 
 struct Edge {
     Edge();~Edge();
 
- // Edge(Cell *parent, Cell *other, double Tension);
+    Edge(Cell *parent, Cell *other, unsigned char tension);
 
-    Edge(Cell *parent, Cell &other, unsigned char tension);
-
-    Cell *second;
-
-
+   // Cell *second;
+    Cell *Parent_ptr,
+         *Child_ptr;
 
     int   Parent_ID,
            Child_ID;
@@ -87,28 +100,35 @@ struct Edge {
     float         Distance, 
                    Tension,
                      Angle;
-
-    unsigned long Color;
+    
+    float     Get_Distance(const Cell &child){
+            float ret =  sqrt(Squared(Parent_ptr->Offset.X - child.Offset.X)  + Squared(Parent_ptr->Offset.Y - child.Offset.Y));
+          //  if(ret < 0) ret = 0; // HMMMMMMM
+            return ret;
+    }
+//    unsigned long Color;
 };
+
+
+
+
+
 
 class Organism {
 public:
     Organism::Organism();
     Organism::~Organism();
-    
-   // Organism::Organism(Organism const &Clone);
 
-    Organism(unsigned char numcells);
+    Organism(unsigned char numcells, int x, int y);
 
     unsigned char Number_of_Cells;
     
+    int ID;
+    int X,Y;
     Vector2D Position, 
              Potential, 
              Velocity, 
              Starting; 
-
-   // float    Speed,
-   //          Angle;
 
     float    Distance_moved;
 
@@ -116,15 +136,23 @@ public:
 
 public:
     
-    void  Update();
+    void  Update(float Time_Step);
     void  Draw();
+    void  Set_Position(int x, int y){
+         Starting.X =  x;
+         Starting.Y =  y;
+         Position.X =  x;
+         Position.Y =  y; 
+         Potential.X = x;
+         Potential.Y = y; 
+    }
+
+    
+Organism* Copy  (Organism *Parent);
+Organism* Mutate(Organism  Parent);
+
 };
 
 
-extern float Get_Distance(const Cell &parent,const Cell &child);
 
-
-
-extern Organism *Make_Copy(const Organism Clone);
-//Edge MakeEdge(Cell *parent, Cell &other, unsigned char tension);
-//Cell  MakeCell(Organism *parent);
+extern int Collision(Organism *parent, Organism *List[]);
