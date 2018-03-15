@@ -102,15 +102,19 @@ Organism::Organism(unsigned char numcells, int x, int y)
 
     FOR_LOOP(count, numcells)  cells.emplace_back((this));
 
-    float     Xx = X,
+    float
+        Xx = X,
         Yy = Y,
-        Theta = 360 / Number_of_Cells;
+        Theta = 360.f / Number_of_Cells;
 
     for (Cell &c : cells)
     {
         Angle += Theta;
-        Xx = X + Radius * cos(RADIANS(Angle));
-        Yy = Y + Radius * sin(RADIANS(Angle));
+        while (Angle < 0) Angle += 360;
+        while (Angle >= 360) Angle -= 360;
+
+        Xx = X + Radius * _COS(Angle);
+        Yy = Y + Radius * _SIN(Angle);
         c.Offset.X = Xx - Position.X;
         c.Offset.Y = Yy - Position.Y;  // rand()%(int)dist;//   // rand()%(int)dist;//
         c.Starting = c.Offset;
@@ -291,8 +295,10 @@ void Organism::Update(float Time_Step)
     {
         C.Speed = C.Brain.Layers[2].Neurons[0].Value * 30;
         C.Angle += (C.Brain.Layers[2].Neurons[1].Value * 5); // rand()%180;//
-        C.Force.X += C.Speed * cos(RADIANS(C.Angle));
-        C.Force.Y += C.Speed * sin(RADIANS(C.Angle));
+        while (C.Angle < 0) C.Angle += 360;
+        while (C.Angle >= 360) C.Angle -= 360;
+        C.Force.X += C.Speed * _COS(C.Angle);
+        C.Force.Y += C.Speed * _SIN(C.Angle);
     }
     //  Draw();
 }

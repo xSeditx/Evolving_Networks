@@ -25,12 +25,13 @@
 #define _CLS              CLS()        //
 #define _SYNC            SYNC()        //
 
-#define _COS(a)     cos(RADIANS(a))  //   Cos[(int)a] // 
-#define _SIN(a)        sin(RADIANS(a)) //  Sin[(int)a] //
+
+extern float COS[360], SIN[360];
+#define _COS(a) COS[static_cast<int>(a)]
+#define _SIN(a) SIN[static_cast<int>(a)]
 
 
-extern float Cos[360],
-Sin[360];
+
 
 
 // cos(RADIANS(a))

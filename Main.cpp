@@ -192,10 +192,4 @@ void main()
         }
 
     }
-
-    // CLEAN UP
-    delete (*C);
 }
-
-
-

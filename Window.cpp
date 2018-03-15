@@ -27,8 +27,7 @@ int TOP_BOUNDS = 0 + WINDOW_OFFSET;
 int RIGHT_BOUNDS = SCREENWIDTH - WINDOW_OFFSET;
 int BOTTOM_BOUNDS = SCREENHEIGHT - WINDOW_OFFSET;
 
-float Cos[360];// = {0}, 
-float Sin[360]; // = {0};
+float COS[360], SIN[360];
 
 
 // CONSTRUCTS A BASIC WINDOW AND BACKBUFFER ASSOCIATED WITH WINDOW
@@ -67,14 +66,9 @@ WINDOW::WINDOW(int x, int y, int width, int height, char *title)
 
     LOOP(360)
     {
-        Cos[count] = cos(RADIANS(count));
-        Sin[count] = sin(RADIANS(count));
+        COS[count] = cos(RADIANS(count));
+        SIN[count] = sin(RADIANS(count));
     }
-
-    //  for(int Angle =0; Angle > 360; Angle++)Cos[360] = cos(RADIANS(Angle));
-    //  for(int Angle =0; Angle > 360; Angle++)Sin[360] = sin(RADIANS(Angle));
-
-
 }
 
 // MESSAGE HANDLER RETURNS FALSE WHEN APPLICATION IS CLOSED OUT
@@ -182,11 +176,11 @@ void UNLOCK_PIXELS()
 // FINDS THE NEX X/Y POSITION A DISTANCE FROM THE GIVEN X/Y AT A GIVEN ANGLE
 float NEWX(float x, float dist, float angle)
 {
-    return x + dist * cos(RADIANS(angle));
+    return x + dist * _COS(angle);
 }
 float NEWY(float y, float dist, float angle)
 {
-    return y + dist * sin(RADIANS(angle));
+    return y + dist * _SIN(angle);
 }
 
 void  PRINT_SCREEN(char *text)
