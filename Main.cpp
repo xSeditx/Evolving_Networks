@@ -100,10 +100,9 @@ void main()
 
             Average += C[number_of_creatures - 1]->Distance_moved / number_of_creatures;
             AverageAvg += Average;
-            Print("  ");
-            std::cout << " FPS: " << SCREEN->FPS << "  CyclesPerSecond:" << SCREEN->CyclePerSecond << " Generation:" << Generation << std::endl;
-            std::cout << " Best:" << C[Best]->Distance_moved << "  " << " Worst: " << C[Worst]->Distance_moved << std::endl;
-            std::cout << " Average:" << Average / number_of_creatures << "  Overall Avg :" << AverageAvg / Epoch << " " << std::endl;
+            std::cout << " FPS: " << SCREEN->FPS << "  CyclesPerSecond:" << SCREEN->CyclePerSecond << " Generation:" << Generation << '\n';
+            std::cout << " Best:" << C[Best]->Distance_moved << "  " << " Worst: " << C[Worst]->Distance_moved << '\n';
+            std::cout << " Average:" << Average / number_of_creatures << "  Overall Avg :" << AverageAvg / Epoch << " \n\n";
 
             Generation++;
 
