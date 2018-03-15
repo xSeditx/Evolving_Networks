@@ -17,7 +17,7 @@
 #include"world.h" 
 #include <string>     // std::string, std::stoi
 
-const int number_of_creatures = 500;
+const int number_of_creatures = 1000;
 
 
 int KEYBOARD_HANDLER(SDL_Keycode sym)
@@ -71,30 +71,30 @@ void main()
 
 
     Cell *Selected = nullptr;
-    _CLS;
+    CLS();
     int Epoch = 1;
     int Generation = 0;
 
     float AverageAvg = 0;
-    Vector2D TEST;
-    int FrameSkip = 2;
+    int FrameSkip = 1;
+
     while (LOOP_GAME())
     {
-
-
-
         if (Epoch % 300 == 0)
         {
-            Organism   Parent;
-            int   Best = 0,
+            int
+                Best = 0,
                 Worst = 0;
-            float   Average = 0;
+            float Average = 0;
 
             FOR_LOOP(count, number_of_creatures - 1)
             {
                 Average += C[count]->Distance_moved;
-                if (C[count]->Distance_moved < C[Worst]->Distance_moved) Worst = count;
-                if (C[count]->Distance_moved > C[Best]->Distance_moved)  Best = count;
+
+                if (C[count]->Distance_moved < C[Worst]->Distance_moved)
+                    Worst = count;
+                if (C[count]->Distance_moved > C[Best]->Distance_moved)
+                    Best = count;
 
             }
 
@@ -106,11 +106,9 @@ void main()
 
             Generation++;
 
-            Parent.Copy(C[Best]);
-
+            Organism Parent(*C[Best]);
             FOR_LOOP(count, number_of_creatures)
             {
-
                 C[count]->Mutate(Parent);
 
                 for (Cell &p : C[count]->cells)
@@ -126,51 +124,49 @@ void main()
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-        if ((Epoch++) % FrameSkip == 0)
+        if (Epoch++ % FrameSkip == 0)
         {
-            _CLS;
+            CLS();
         }
 
         FOR_LOOP(count, number_of_creatures)
         {
-
             Creature = C[count];
 
             if (Selected == nullptr && SCREEN->MOUSE_BUTTON.LEFT == true)
             {
                 for (Cell &cell : Creature->cells)
                 {
-
-                    if (Is_CLICK(cell.Offset.X + Creature->Potential.X, cell.Offset.Y + Creature->Potential.Y))Selected = &cell;
-
+                    if (Is_CLICK(cell.Offset.X + Creature->Potential.X, cell.Offset.Y + Creature->Potential.Y))
+                        Selected = &cell;
                 }
 
             }
 
-
             if (Selected != nullptr)
             {
+                constexpr float MASS = 5;
 
-                float MASS = 5;
+                Selected->Force.X = MASS * SCREEN->MOUSE_VELOCITY.x;
+                Selected->Force.Y = MASS * SCREEN->MOUSE_VELOCITY.y;
 
-                Selected->Force.X = (MASS * SCREEN->MOUSE_VELOCITY.x); // .03, TIME STEP? 
-                Selected->Force.Y = (MASS * SCREEN->MOUSE_VELOCITY.y); //(rand()%3-1) * 1;
-
-                SET_DRAW_COLOR(RGB(255, 255, 255));
-                FILLED_CIRCLE(Selected->Offset.X + Selected->Parent->Potential.X,
-                    Selected->Offset.Y + Selected->Parent->Potential.Y, 7);
+                SET_DRAW_COLOR(color_from_rgb(255, 255, 255));
+                FILLED_CIRCLE(
+                    Selected->Offset.X + Selected->Parent->Potential.X,
+                    Selected->Offset.Y + Selected->Parent->Potential.Y,
+                    7 /* radius */
+                );
             }
+
             if (SCREEN->MOUSE_BUTTON.LEFT == false)
             {
                 Selected = nullptr;
             }
 
-
-
             Creature->Update(10);
             // Creature->Collision(&C[0]);
 
-            if (Epoch%FrameSkip == 0)
+            if (Epoch % FrameSkip == 0)
             {
                 Creature->Draw();
             }
@@ -182,13 +178,11 @@ void main()
         {
             yy += 5;
             LINE2(5, yy, 0, C[count]->Distance_moved);
-
         }
 
-        if (Epoch%FrameSkip == 0)
+        if (Epoch % FrameSkip == 0)
         {
-            _SYNC;
+            SYNC();
         }
-
     }
 }

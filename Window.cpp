@@ -31,8 +31,7 @@ float COS[360], SIN[360];
 
 
 // CONSTRUCTS A BASIC WINDOW AND BACKBUFFER ASSOCIATED WITH WINDOW
-WINDOW::~WINDOW()
-{ }
+
 WINDOW::WINDOW(int x, int y, int width, int height, char *title)
 {
     X = x;  Y = y;
@@ -172,16 +171,6 @@ void UNLOCK_PIXELS()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// VECTOR MANIPULATION /////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// FINDS THE NEX X/Y POSITION A DISTANCE FROM THE GIVEN X/Y AT A GIVEN ANGLE
-float NEWX(float x, float dist, float angle)
-{
-    return x + dist * _COS(angle);
-}
-float NEWY(float y, float dist, float angle)
-{
-    return y + dist * _SIN(angle);
-}
 
 void  PRINT_SCREEN(char *text)
 {
@@ -376,13 +365,6 @@ void LINE(int x1, int y1, int x2, int y2)
             SET_PIXELII(x, y, c);
         }
     }
-}
-
-
-// RETURNS ANGLE IN DEGREES
-float FindAngle(SDL_Point A, SDL_Point B)
-{
-    return atan2f(B.y - A.y, B.x - A.x) / 3.14159 * 180;
 }
 
 

@@ -2,7 +2,7 @@
 #include <stdio.h>  
 #include <stdlib.h> 
 
-class World
+class World final
 {
 public:
     World(int x, int y)
@@ -10,7 +10,7 @@ public:
         Size.Height = x;
         Size.Width = y;
         Buffer = new int[x * y];
-        memset(Buffer, 0, x * y * sizeof(int));
+        memset(Buffer, 0, x * y * sizeof(*Buffer));
     }
     struct size
     {
@@ -24,15 +24,16 @@ public:
         {
             int X,
                 Y;
-        }Position;
+        } Position;
+
         struct view
         {
             int Height,
                 Width;
-        }ViewPort;
-    }Camera;
+        } ViewPort;
+    } Camera;
 
-    int CheckSpace(int x, int y)
+    int CheckSpace(int x, int y) const
     {
         return Buffer[x + Size.Width * y];
     }
@@ -44,9 +45,5 @@ public:
     }
 
     std::vector<Organism>  Creatures;
-
     int *Buffer;
 };
-
-
-extern World WORLD;

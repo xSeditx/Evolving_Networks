@@ -39,8 +39,7 @@ Net::Net(int inputs, int hidden, int outputs)
     {
         FOR_LOOP(Icount, inputs)
         {
-            Layers[1].Neurons[Hcount].Synapses.emplace_back(
-                Synapse(RANDOM(1), &Layers[0].Neurons[Icount]));
+            Layers[1].Neurons[Hcount].Synapses.emplace_back(RANDOM(1));
         }
     }
 
@@ -48,14 +47,11 @@ Net::Net(int inputs, int hidden, int outputs)
     {
         FOR_LOOP(Hcount, hidden)
         {
-            Layers[2].Neurons[Ocount].Synapses.emplace_back(
-                Synapse(RANDOM(1), &Layers[1].Neurons[Hcount]));
+            Layers[2].Neurons[Ocount].Synapses.emplace_back(RANDOM(1));
 
         }
     }
 }
-
-
 
 void Net::Think()
 {
@@ -88,7 +84,6 @@ void Net::Draw()
 { }
 
 
-Synapse::Synapse(float value, Neuron *other)
-    :Other(other),
-    Weight(value)
+Synapse::Synapse(float value)
+    : Weight(value)
 { }

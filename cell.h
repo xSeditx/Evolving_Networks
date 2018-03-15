@@ -29,9 +29,12 @@
 #define NUMBER_OF_NEURONS  2
 #define AMOUNT_FOOD        2200
 
-class Organism; struct Edge; // Forward Declaration
 
-class Cell
+class Organism;
+struct Edge;
+
+
+class Cell final
 {
 public:
     Cell() = default;
@@ -77,12 +80,7 @@ public:
 };
 
 
-
-
-
-
-
-struct Edge
+struct Edge final
 {
     Edge() = default;
     ~Edge() = default;
@@ -114,11 +112,7 @@ struct Edge
 };
 
 
-
-
-
-
-class Organism
+class Organism final
 {
 public:
     Organism() = default;
@@ -159,4 +153,3 @@ public:
     Organism*   Mutate(Organism  Parent);
     int         Collision(Organism *List []) const;
 };
-

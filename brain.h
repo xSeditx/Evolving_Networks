@@ -5,24 +5,19 @@
 
 class Neuron;
 
-class Synapse
+class Synapse final
 {
 public:
     Synapse() = default;
     ~Synapse() = default;
 
-    Synapse(float value, Neuron *other);
+    Synapse(float value);
 
-    int CREATOR;
     float     Weight;
-    Neuron   *Other;
-
-
 };
-extern Synapse MakeSynapse(float value, Neuron *parent, Neuron *other);
 
 
-class Neuron
+class Neuron final
 {
 public:
     Neuron() = default;
@@ -33,7 +28,7 @@ public:
     std::vector<Synapse> Synapses;
 };
 
-class Layer
+class Layer final
 {
 public:
     Layer() = default;
@@ -46,15 +41,15 @@ public:
         Input,
         Hidden,
         Output
-    };   LType LayerType;
+    };
+    LType LayerType;
 
     int Number_of_Neurons;
     std::vector<Neuron> Neurons;
-
 };
 
 
-class Net
+class Net final
 {
 public:
     Net() = default;

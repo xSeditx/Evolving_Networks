@@ -1,17 +1,11 @@
 #pragma once
 #define SDL_MAIN_HANDLED
-#define _SDL_
 #include <SDL.h>
 
 #define GetRandom( min, max )     ((rand() % (int)(((max) + 1) - (min))) + (min))  
 #define RANDOM(x)                 ((rand() * (1.0 / (1.0 + RAND_MAX))) * x)
 #define RANDOM_RANGE(x)           (RANDOM(x * 2) - (x))
 
-#ifdef RGB
-#undef RGB
-#endif
-
-#define RGB(r,g,b)                ((int)b + ((int)g<< 8) + ((int)r << 16))
 #define RADIANS(angle)            (angle * .0174532925199444)
 
 #define LOOP(x)                   for(int count = 0; count < (x); count++)
@@ -20,21 +14,23 @@
 #define SCREENWIDTH        1280 //680 
 #define SCREENHEIGHT       960 //460 
 
-#define _LOOP_GAME  LOOP_GAME()        // This is being done for future compatibility with various Graphics Libraries
-#define _CLS              CLS()        //
-#define _SYNC            SYNC()        //
-
-
 extern float COS[360], SIN[360];
 #define _COS(a) COS[static_cast<int>(a)]
 #define _SIN(a) SIN[static_cast<int>(a)]
 
+template <typename T>
+static inline unsigned color_from_rgb(T r, T g, T b)
+{
+    return static_cast<unsigned>(b) + (static_cast<unsigned>(g) << 8u) + (static_cast<unsigned>(r) << 16u);
+}
 
-class WINDOW
+
+class WINDOW final
 {
 
 public:
-    WINDOW(); ~WINDOW();
+    WINDOW() = default;
+    ~WINDOW() = default;
     WINDOW(int, int, int, int, char*);
 
 
@@ -57,8 +53,7 @@ public:
     SDL_Event               EVENT;
     SDL_Surface            *WINDOW_SURFACE;
     SDL_PixelFormat        *MAPPING_FORMAT;
-    SDL_Point               MOUSE_POSITION,
-        MOUSE_VELOCITY;
+    SDL_Point               MOUSE_POSITION, MOUSE_VELOCITY;
 
     double                  MOUSE_ANGLE;
     struct
@@ -85,28 +80,39 @@ public:
 
 extern   int       KEYBOARD_HANDLER(SDL_Keycode sym);
 
-extern   float     NEWX(float x, float dist, float angle);
-extern   float     NEWY(float y, float dist, float angle);
+// FINDS THE NEX X/Y POSITION A DISTANCE FROM THE GIVEN X/Y AT A GIVEN ANGLE
+static inline float NEWX(float x, float dist, float angle)
+{
+    return x + dist * _COS(angle);
+}
+static inline float NEWY(float y, float dist, float angle)
+{
+    return y + dist * _SIN(angle);
+}
 
-extern   void      SYNC();
-extern   void      CLS();
-extern   void      PRINT_SCREEN(char *text);
-extern   void      SET_PIXEL(int, int, Uint32);
-extern   void      SET_PIXELII(int, int, Uint32);
-extern   void      SET_DRAW_COLOR(unsigned long Col);
-extern   void      LINE(int x1, int y1, int x2, int y2);
-extern   void      LINE2(int x, int y, float Angle, int Length);
-extern   void      CIRCLE(int x, int y, float radius);
-extern   void      FILLED_CIRCLE(int x, int y, float radius);
-extern   void      BOX(int X1, int Y1, int X2, int Y2);
-extern   void      FILLED_BOX(int X1, int Y1, int X2, int Y2);
+void      SYNC();
+void      CLS();
+void      PRINT_SCREEN(char *text);
+void      SET_PIXEL(int, int, Uint32);
+void      SET_PIXELII(int, int, Uint32);
+void      SET_DRAW_COLOR(unsigned long Col);
+void      LINE(int x1, int y1, int x2, int y2);
+void      LINE2(int x, int y, float Angle, int Length);
+void      CIRCLE(int x, int y, float radius);
+void      FILLED_CIRCLE(int x, int y, float radius);
+void      BOX(int X1, int Y1, int X2, int Y2);
+void      FILLED_BOX(int X1, int Y1, int X2, int Y2);
 
 
-extern   float    FindAngle(SDL_Point A, SDL_Point B);
+// RETURNS ANGLE IN DEGREES
+static inline float FindAngle(SDL_Point A, SDL_Point B)
+{
+    return atan2f(B.y - A.y, B.x - A.x) / 3.14159 * 180;
+}
 
-extern   bool      Is_CLICK(int X, int Y);
-extern   bool      LOOP_GAME();
-extern   bool      SET_ACTIVE_WINDOW(WINDOW *active);
+bool      Is_CLICK(int X, int Y);
+bool      LOOP_GAME();
+bool      SET_ACTIVE_WINDOW(WINDOW *active);
 
 extern   WINDOW   *SCREEN;
 extern   int       WINDOW_OFFSET;

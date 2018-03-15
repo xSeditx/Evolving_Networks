@@ -19,8 +19,6 @@
 #include"Vertex2D.h"
 #include"world.h"
 
-using namespace std;
-
 //=============================================================================================================================================================
 //                                                         CELL CLASS                                                                                
 //=============================================================================================================================================================
@@ -38,7 +36,7 @@ Cell::Cell(Organism *parent)
     , Speed(0)
     , Size(10)
     , Mass(20)
-    , Color(RGB(
+    , Color(color_from_rgb(
         (55 + RANDOM(200)),
         (55 + RANDOM(200)),
         (55 + RANDOM(200))
@@ -212,7 +210,7 @@ void Organism::Update(float Time_Step)
 
     for (Cell &Parent : cells)
     {
-        Parent.Velocity *= .5; // APPLY A CRUDE "FRICTION" SO THAT VELOCITY IS LOST OVER TIME
+        Parent.Velocity *= .5f; // APPLY A CRUDE "FRICTION" SO THAT VELOCITY IS LOST OVER TIME
 
         Parent.See();
         Parent.Brain.Think();
@@ -227,9 +225,9 @@ void Organism::Update(float Time_Step)
             Child.Displacement = Get_Displacement(cells[off].Offset, Parent.Offset) - Child.RestDistance;
             Child.Distance = Child.Get_Distance(cells[off]);
 
-            constexpr float K = .1;
-            cells[off].Force.X += -K * (Child.Displacement.X);
-            cells[off].Force.Y += -K * (Child.Displacement.Y);
+            constexpr float K = .1f;
+            cells[off].Force.X += -K * Child.Displacement.X;
+            cells[off].Force.Y += -K * Child.Displacement.Y;
 
 
             // acceleration = (−SpringStiffness ⁄ mass) * Position 
@@ -239,7 +237,6 @@ void Organism::Update(float Time_Step)
             cells[off].Brain.Layers[0].Neurons[0].Value = cells[off].Force.Y; //.Brain.Layers[2].Neurons[0].Value;
         }
 
-
         while (Parent.Angle < 0) Parent.Angle += 360;
         while (Parent.Angle >= 360) Parent.Angle -= 360;
     }
@@ -248,9 +245,11 @@ void Organism::Update(float Time_Step)
     for (Cell &C : cells)
     {
         C.Speed = C.Brain.Layers[2].Neurons[0].Value * 30;
-        C.Angle += (C.Brain.Layers[2].Neurons[1].Value * 5); // rand()%180;//
+        C.Angle += (C.Brain.Layers[2].Neurons[1].Value * 5);
+
         while (C.Angle < 0) C.Angle += 360;
         while (C.Angle >= 360) C.Angle -= 360;
+
         C.Force.X += C.Speed * _COS(C.Angle);
         C.Force.Y += C.Speed * _SIN(C.Angle);
     }
