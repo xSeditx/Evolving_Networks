@@ -68,8 +68,8 @@ public:
     void See();
     void Set_Position(int x, int y)
     {
-        Offset.X   = x;
-        Offset.Y   = y;
+        Offset.X = x;
+        Offset.Y = y;
         Starting.X = x;
         Starting.Y = y;
     }
@@ -106,7 +106,7 @@ struct Edge
 
     float     Get_Distance(const Cell &child)
     {
-        float ret =  sqrt(Squared(Parent_ptr->Offset.X - child.Offset.X) + Squared(Parent_ptr->Offset.Y - child.Offset.Y));
+        float ret = sqrt(Squared(Parent_ptr->Offset.X - child.Offset.X) + Squared(Parent_ptr->Offset.Y - child.Offset.Y));
         //  if(ret < 0) ret = 0; // HMMMMMMM
         return ret;
     }
@@ -147,10 +147,10 @@ public:
     void  Draw();
     void  Set_Position(int x, int y)
     {
-        Starting.X =  x;
-        Starting.Y =  y;
-        Position.X =  x;
-        Position.Y =  y;
+        Starting.X = x;
+        Starting.Y = y;
+        Position.X = x;
+        Position.Y = y;
         Potential.X = x;
         Potential.Y = y;
     }

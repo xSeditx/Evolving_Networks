@@ -108,11 +108,11 @@ Organism::Organism(unsigned char numcells, int x, int y)
 
     for (Cell &c : cells)
     {
-        Angle+=Theta;
+        Angle += Theta;
         Xx = X + Radius * cos(RADIANS(Angle));
         Yy = Y + Radius * sin(RADIANS(Angle));
-        c.Offset.X =  Xx - Position.X;
-        c.Offset.Y =  Yy - Position.Y;  // rand()%(int)dist;//   // rand()%(int)dist;//
+        c.Offset.X = Xx - Position.X;
+        c.Offset.Y = Yy - Position.Y;  // rand()%(int)dist;//   // rand()%(int)dist;//
         c.Starting = c.Offset;
         c.Number_of_edges = 0;
     }
@@ -123,7 +123,7 @@ Organism::Organism(unsigned char numcells, int x, int y)
         {  // MAKE EDGES CONNECTING THE OTHER CELLS
             if (edgecount != cellcount)
             {
-                int cnum  = rand() % numcells;
+                int cnum = rand() % numcells;
                 int cnum2 = rand() % numcells;
 
                 cells[cnum].edges.push_back(Edge(&cells[cnum], &cells[cnum2], RANDOM(1)));
@@ -157,11 +157,11 @@ Organism* Organism::Mutate(Organism Parent)
     FOR_LOOP(cellcount, Parent.Number_of_Cells)
     { // FOR EACH CELL....
 
-        this->cells[cellcount].Offset =  this->cells[cellcount].Starting;
+        this->cells[cellcount].Offset = this->cells[cellcount].Starting;
 
 
-        this->cells[cellcount].Velocity     = 0;
-        this->cells[cellcount].Force        = 0;
+        this->cells[cellcount].Velocity = 0;
+        this->cells[cellcount].Force = 0;
         this->cells[cellcount].Acceleration = 0;
 
         this->cells[cellcount].Speed = 0;
@@ -190,7 +190,7 @@ Organism* Organism::Mutate(Organism Parent)
             FOR_LOOP(HSynapses, Parent.cells[cellcount].Brain.Layers[0].Number_of_Neurons)
             {
 
-                this->cells[cellcount].Brain.Layers[1].Neurons[HNeuron].Synapses[HSynapses].Weight +=  ((RANDOM(2) - 1) / 10);
+                this->cells[cellcount].Brain.Layers[1].Neurons[HNeuron].Synapses[HSynapses].Weight += ((RANDOM(2) - 1) / 10);
             }
         }
 
@@ -204,7 +204,7 @@ Organism* Organism::Mutate(Organism Parent)
             FOR_LOOP(OSynapses, Parent.cells[cellcount].Brain.Layers[1].Number_of_Neurons)
             {
 
-                this->cells[cellcount].Brain.Layers[2].Neurons[ONeuron].Synapses[OSynapses].Weight +=  ((RANDOM(2) - 1) / 10);
+                this->cells[cellcount].Brain.Layers[2].Neurons[ONeuron].Synapses[OSynapses].Weight += ((RANDOM(2) - 1) / 10);
             }
         }
     }
@@ -216,10 +216,10 @@ void Organism::Update(float Time_Step)
 {
 
     float
-        DELTA_TIME     = 0,
+        DELTA_TIME = 0,
         DELTA_VELOCITY = 0;
 
-    DELTA_TIME =(SDL_GetTicks() - SCREEN->TIME) / 10;
+    DELTA_TIME = (SDL_GetTicks() - SCREEN->TIME) / 10;
     SCREEN->TIME = SDL_GetTicks();
 
     float Xmove = 0, Ymove = 0;
@@ -230,7 +230,7 @@ void Organism::Update(float Time_Step)
 
         Parent.Acceleration = ((Parent.Force) / Parent.Mass);
         Parent.Velocity += (Parent.Acceleration); // Change in Velocity equals Acceleration    
-        Parent.Offset   += Parent.Velocity;     // Change in Position over time equals Velocity   
+        Parent.Offset += Parent.Velocity;     // Change in Position over time equals Velocity   
 
         Parent.Force.X = 0; Parent.Force.Y = 0;
 
@@ -247,7 +247,7 @@ void Organism::Update(float Time_Step)
 
     Potential.X = Xmove + Starting.X;
     Potential.Y = Ymove + Starting.Y;
-    Distance_moved =  sqrt(Squared(X - Starting.X) + Squared(Y - Starting.Y));
+    Distance_moved = sqrt(Squared(X - Starting.X) + Squared(Y - Starting.Y));
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -261,12 +261,12 @@ void Organism::Update(float Time_Step)
         for (Edge &Child : Parent.edges)
         { // For Every Cell Get and Set Information about all Connecting Cells.
 
-            int off =  Child.Child_ID;
+            int off = Child.Child_ID;
 
             Child.Angle = GetAngle(Parent.Offset, cells[off].Offset);
 
-            Child.Displacement =  Get_Displacement(cells[off].Offset, Parent.Offset) - Child.RestDistance;
-            Child.Distance     =  Child.Get_Distance(cells[off]);
+            Child.Displacement = Get_Displacement(cells[off].Offset, Parent.Offset) - Child.RestDistance;
+            Child.Distance = Child.Get_Distance(cells[off]);
 
             float K = .1;
             cells[off].Force.X += -K * (Child.Displacement.X);
@@ -281,15 +281,15 @@ void Organism::Update(float Time_Step)
         }
 
 
-        if (Parent.Angle < 0) Parent.Angle   += 360;
-        if (Parent.Angle > 360) Parent.Angle   -=   0;
+        if (Parent.Angle < 0) Parent.Angle += 360;
+        if (Parent.Angle > 360) Parent.Angle -= 0;
 
     }
 
 
     for (Cell &C : cells)
     {
-        C.Speed =   C.Brain.Layers[2].Neurons[0].Value * 30;
+        C.Speed = C.Brain.Layers[2].Neurons[0].Value * 30;
         C.Angle += (C.Brain.Layers[2].Neurons[1].Value * 5); // rand()%180;//
         C.Force.X += C.Speed * cos(RADIANS(C.Angle));
         C.Force.Y += C.Speed * sin(RADIANS(C.Angle));
@@ -305,13 +305,13 @@ void Organism::Draw()
         {
 
             int Parent = cells[cellcount].edges[edgecount].Parent_ID;
-            int Child  = cells[cellcount].edges[edgecount].Child_ID;
+            int Child = cells[cellcount].edges[edgecount].Child_ID;
 
-            float x1 =  cells[cellcount].Offset.X + Potential.X,
-                y1 =  cells[cellcount].Offset.Y + Potential.Y,
+            float x1 = cells[cellcount].Offset.X + Potential.X,
+                y1 = cells[cellcount].Offset.Y + Potential.Y,
 
-                x2 =  (x1 + cells[Child].Offset.X + Potential.X) / 2,
-                y2 =  (y1 + cells[Child].Offset.Y + Potential.Y) / 2;
+                x2 = (x1 + cells[Child].Offset.X + Potential.X) / 2,
+                y2 = (y1 + cells[Child].Offset.Y + Potential.Y) / 2;
 
 
 

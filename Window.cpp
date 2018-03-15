@@ -37,11 +37,11 @@ WINDOW::~WINDOW()
 WINDOW::WINDOW(int x, int y, int width, int height, char *title)
 {
     X = x;  Y = y;
-    WIDTH  = width;
+    WIDTH = width;
     HEIGHT = height;
-    TITLE  = title;
+    TITLE = title;
 
-    MOUSE_VELOCITY.y = MOUSE_VELOCITY.x =0; MOUSE_ANGLE = 0;
+    MOUSE_VELOCITY.y = MOUSE_VELOCITY.x = 0; MOUSE_ANGLE = 0;
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0)std::cout << "Init Video Error" << std::endl;
     HWND = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, 0); if (!HWND)                       std::cout << "ERROR: Initializing SDL Window" << std::endl;
@@ -49,21 +49,21 @@ WINDOW::WINDOW(int x, int y, int width, int height, char *title)
 
     if (SDL_SetRenderDrawColor(RENDER, 0, 0, 0, 255) != 0)std::cout << "Set Color Error" << std::endl;
 
-    BACK_BUFFER  = SDL_CreateTexture(RENDER, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, WIDTH, HEIGHT);
+    BACK_BUFFER = SDL_CreateTexture(RENDER, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, WIDTH, HEIGHT);
 
     SDL_SetRenderTarget(RENDER, BACK_BUFFER);
     SDL_SetWindowResizable(HWND, SDL_TRUE);
 
-    WINDOW_SURFACE   = SDL_GetWindowSurface(HWND);
-    WINDOW_FORMAT    = SDL_GetWindowPixelFormat(HWND);
+    WINDOW_SURFACE = SDL_GetWindowSurface(HWND);
+    WINDOW_FORMAT = SDL_GetWindowPixelFormat(HWND);
 
     WINDOW_PIXELS = new Uint32[WIDTH * (HEIGHT + 400) + 1];
     memset(WINDOW_PIXELS, 255, WIDTH * HEIGHT * sizeof(Uint32));
 
-    FRAME_COUNTER=0;
-    CYCLE_COUNTER=0;
-    FPS =0;
-    CyclePerSecond=0;
+    FRAME_COUNTER = 0;
+    CYCLE_COUNTER = 0;
+    FPS = 0;
+    CyclePerSecond = 0;
 
     LOOP(360)
     {
@@ -264,8 +264,8 @@ void BOX(int X1, int Y1, int X2, int Y2)
 
 void CIRCLE(int x, int y, float radius)
 {
-    float X1 = x + .5, Y1 =  +.5;
-    for (float Angle =0; Angle < 360; Angle++)
+    float X1 = x + .5, Y1 = +.5;
+    for (float Angle = 0; Angle < 360; Angle++)
     {
         X1 = x + radius * _COS((int) Angle);
         Y1 = y + radius * _SIN((int) Angle);
@@ -280,7 +280,7 @@ void FILLED_CIRCLE(int x, int y, float radius)
     for (float r = 0; r < radius; r++)
     {
         float Theta = (360 / (8 * r));
-        for (float Angle =0; Angle < 360; Angle+= Theta)
+        for (float Angle = 0; Angle < 360; Angle += Theta)
         {
             X1 = x + r * _COS((int) (Angle));    //X1 = x + r * cos(RADIANS(Angle));
             Y1 = y + r * _SIN((int) (Angle));    //Y1 = y + r * sin(RADIANS(Angle));
@@ -305,9 +305,9 @@ void LINE2(int x, int y, float Angle, int Length)
 void LINE(int x1, int y1, int x2, int y2)
 {
     int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
-    dx=x2 - x1; dy=y2 - y1;
-    dx1=abs(dx); dy1=abs(dy); //fabs
-    px=2 * dy1 - dx1; py=2 * dx1 - dy1;
+    dx = x2 - x1; dy = y2 - y1;
+    dx1 = abs(dx); dy1 = abs(dy); //fabs
+    px = 2 * dy1 - dx1; py = 2 * dx1 - dy1;
 
     long c = SCREEN->DRAW_COLOR; //RGB(155,155,55);
 
@@ -315,33 +315,33 @@ void LINE(int x1, int y1, int x2, int y2)
     {
         if (dx >= 0)
         {
-            x=x1; y=y1;
-            xe=x2;
+            x = x1; y = y1;
+            xe = x2;
         }
         else
         {
-            x=x2; y=y2;
-            xe=x1;
+            x = x2; y = y2;
+            xe = x1;
         }
         SET_PIXELII(x, y, c);
-        for (i=0; x < xe; i++)
+        for (i = 0; x < xe; i++)
         {
-            x=x + 1;
+            x = x + 1;
             if (px < 0)
             {
-                px=px + 2 * dy1;
+                px = px + 2 * dy1;
             }
             else
             {
                 if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0))
                 {
-                    y=y + 1;
+                    y = y + 1;
                 }
                 else
                 {
-                    y=y - 1;
+                    y = y - 1;
                 }
-                px=px + 2 * (dy1 - dx1);
+                px = px + 2 * (dy1 - dx1);
             }
             SET_PIXELII(x, y, c);
         }
@@ -350,35 +350,35 @@ void LINE(int x1, int y1, int x2, int y2)
     {
         if (dy >= 0)
         {
-            x=x1;
-            y=y1;
-            ye=y2;
+            x = x1;
+            y = y1;
+            ye = y2;
         }
         else
         {
-            x=x2;
-            y=y2;
-            ye=y1;
+            x = x2;
+            y = y2;
+            ye = y1;
         }
         SET_PIXELII(x, y, c);
-        for (i=0; y < ye; i++)
+        for (i = 0; y < ye; i++)
         {
-            y=y + 1;
+            y = y + 1;
             if (py <= 0)
             {
-                py=py + 2 * dx1;
+                py = py + 2 * dx1;
             }
             else
             {
                 if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0))
                 {
-                    x=x + 1;
+                    x = x + 1;
                 }
                 else
                 {
-                    x=x - 1;
+                    x = x - 1;
                 }
-                py=py + 2 * (dx1 - dy1);
+                py = py + 2 * (dx1 - dy1);
             }
             SET_PIXELII(x, y, c);
         }

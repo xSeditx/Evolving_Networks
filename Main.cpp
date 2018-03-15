@@ -46,17 +46,17 @@ void main()
     }
 
 
-    int x     = 0,
-        y     = 10,
+    int x = 0,
+        y = 10,
         xjump = 100,
         yjump = 100;
 
     FOR_LOOP(count, number_of_creatures)
     {
-        x+=xjump;
+        x += xjump;
         if (x > SCREENWIDTH - 100)
         {
-            x=xjump; y+=yjump;
+            x = xjump; y += yjump;
         }
         C[count]->Set_Position(x, y);//rand()%SCREENWIDTH;
 
@@ -90,20 +90,20 @@ void main()
         if (Epoch % 300 == 0)
         {
             Organism   Parent;
-            int   Best    = 0,
-                Worst   = 0;
+            int   Best = 0,
+                Worst = 0;
             float   Average = 0;
 
             FOR_LOOP(count, number_of_creatures - 1)
             {
-                Average+=C[count]->Distance_moved;
+                Average += C[count]->Distance_moved;
                 if (C[count]->Distance_moved < C[Worst]->Distance_moved) Worst = count;
                 if (C[count]->Distance_moved > C[Best]->Distance_moved)  Best = count;
 
             }
 
-            Average+=C[number_of_creatures - 1]->Distance_moved / number_of_creatures;
-            AverageAvg +=Average;
+            Average += C[number_of_creatures - 1]->Distance_moved / number_of_creatures;
+            AverageAvg += Average;
             Print("  ");
             cout << " FPS: " << SCREEN->FPS << "  CyclesPerSecond:" << SCREEN->CyclePerSecond << " Generation:" << Generation << endl;
             cout << " Best:" << C[Best]->Distance_moved << "  " << " Worst: " << C[Worst]->Distance_moved << endl;
@@ -120,9 +120,9 @@ void main()
 
                 for (Cell &p : C[count]->cells)
                 {
-                    p.Brain.Layers[0].Neurons[0].Value =  RANDOM(1) - .5;
-                    p.Brain.Layers[0].Neurons[1].Value =  RANDOM(1) - .5;
-                    p.Brain.Layers[0].Neurons[2].Value =  RANDOM(1) - .5;
+                    p.Brain.Layers[0].Neurons[0].Value = RANDOM(1) - .5;
+                    p.Brain.Layers[0].Neurons[1].Value = RANDOM(1) - .5;
+                    p.Brain.Layers[0].Neurons[2].Value = RANDOM(1) - .5;
 
                 }
             }
@@ -185,7 +185,7 @@ void main()
         int yy = 0;
         FOR_LOOP(count, number_of_creatures)
         {
-            yy +=5;
+            yy += 5;
             LINE2(5, yy, 0, C[count]->Distance_moved);
 
         }

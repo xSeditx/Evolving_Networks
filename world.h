@@ -8,7 +8,7 @@ public:
     World(int x, int y)
     {
         Size.Height = x;
-        Size.Width  = y;
+        Size.Width = y;
         Buffer = new int[x * y];
         memset(Buffer, 0, x * y * sizeof(int));
     }
