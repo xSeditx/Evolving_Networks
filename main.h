@@ -6,13 +6,13 @@
 #include"Window.h"
 #include<string.h>
 
-extern bool SHOW_VISION; 
-extern bool SHOW_SEX;   
+extern bool SHOW_VISION;
+extern bool SHOW_SEX;
 extern bool SHOW_COLLISION;
 
 
 long BIRTHS = 0,
-	 DEATHS = 0;
+DEATHS = 0;
 
 extern int  NUM_CREATURES;
 

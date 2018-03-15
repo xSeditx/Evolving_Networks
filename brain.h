@@ -5,62 +5,71 @@
 
 class Neuron;
 
-class Synapse{
+class Synapse final
+{
 public:
-    Synapse();~Synapse();
+    Synapse() = default;
+    ~Synapse() = default;
 
-    Synapse(float value, Neuron *other);
+    Synapse(float value);
 
-    int CREATOR;
     float     Weight;
-    Neuron   *Other;
+};
 
 
-};      
-extern  Synapse   MakeSynapse(float value, Neuron *parent, Neuron *other);
-
-
-class Neuron{
+class Neuron final
+{
 public:
-    Neuron();~Neuron();
-   
+    Neuron() = default;
+    ~Neuron() = default;
+
     float Value;
 
     std::vector<Synapse> Synapses;
 };
 
-class Layer{
+class Layer final
+{
 public:
-    Layer();~Layer();
+    Layer() = default;
+    ~Layer() = default;
 
     Layer(int number_of_neurons);
 
-    enum LType{
-         Input,
-         Hidden,
-         Output
-    };   LType LayerType;
+    enum LType
+    {
+        Input,
+        Hidden,
+        Output
+    };
+    LType LayerType;
 
     int Number_of_Neurons;
-     std::vector<Neuron> Neurons;
-
+    std::vector<Neuron> Neurons;
 };
 
 
-class Net{
+class Net final
+{
 public:
-    Net();~Net();
+    Net() = default;
+    ~Net() = default;
     Net(int inputs, int hidden, int outputs);
 
     int Number_of_Layers;
-     std::vector<Layer> Layers;
+    std::vector<Layer> Layers;
 
     void Think();
     void Draw();
 };
 
 
-extern inline float Sigmoid(float x);
-extern inline float Activation(float x);
+inline static float Sigmoid(float x)
+{
+    return 1.f / (1.f + exp(-x));
+}
 
-
+inline static float Activation(float x)
+{
+    return Sigmoid(x) * 2 - 1;
+}
