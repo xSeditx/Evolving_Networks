@@ -30,13 +30,6 @@ extern float COS[360], SIN[360];
 #define _SIN(a) SIN[static_cast<int>(a)]
 
 
-
-
-
-// cos(RADIANS(a))
-//sin(RADIANS(a))
-
-
 class WINDOW
 {
 
@@ -70,12 +63,11 @@ public:
     double                  MOUSE_ANGLE;
     struct
     {
-        bool LEFT,
-            RIGHT;
-    }MOUSE_BUTTON;
+        bool LEFT, RIGHT;
+    } MOUSE_BUTTON;
 
     unsigned long           DRAW_COLOR;
-    float  FPS;
+    float FPS;
     void SET_DRAW_COLOR(unsigned long Col);
 
     double TIME;
@@ -122,16 +114,3 @@ extern   int       LEFT_BOUNDS;
 extern   int       TOP_BOUNDS;
 extern   int       RIGHT_BOUNDS;
 extern   int       BOTTOM_BOUNDS;
-
-
-
-
-struct stack_array
-{
-    int ITERATOR;
-    int SIZE;
-    int *ARRAY;
-    int ADD();
-    int REMOVE();
-    int GETLAST();
-};

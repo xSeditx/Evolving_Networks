@@ -87,25 +87,22 @@ Organism::Organism()
 
 
 Organism::Organism(unsigned char numcells, int x, int y)
-    :Number_of_Cells(0),
-    Distance_moved(0.0),
-    Position(x, y),
-    Starting(x, y),
-    Potential(x, y),
-    X(x), Y(y),
-    Velocity(0, 0),
-    Radius(20),
-    Angle(0)
+    : Number_of_Cells(0)
+    , Distance_moved(0.0)
+    , Position(x, y)
+    , Starting(x, y)
+    , Potential(x, y)
+    , X(x), Y(y)
+    , Velocity(0, 0)
+    , Radius(20)
+    , Angle(0)
 
 {
 
 
     FOR_LOOP(count, numcells)  cells.emplace_back((this));
 
-    float
-        Xx = X,
-        Yy = Y,
-        Theta = 360.f / Number_of_Cells;
+    const float Theta = 360.f / Number_of_Cells;
 
     for (Cell &c : cells)
     {
@@ -113,8 +110,8 @@ Organism::Organism(unsigned char numcells, int x, int y)
         while (Angle < 0) Angle += 360;
         while (Angle >= 360) Angle -= 360;
 
-        Xx = X + Radius * _COS(Angle);
-        Yy = Y + Radius * _SIN(Angle);
+        const auto Xx = X + Radius * _COS(Angle);
+        const auto Yy = Y + Radius * _SIN(Angle);
         c.Offset.X = Xx - Position.X;
         c.Offset.Y = Yy - Position.Y;  // rand()%(int)dist;//   // rand()%(int)dist;//
         c.Starting = c.Offset;
@@ -122,9 +119,10 @@ Organism::Organism(unsigned char numcells, int x, int y)
     }
 
     FOR_LOOP(cellcount, numcells)
-    {   // FOR EACH CELL.....
+    {
         FOR_LOOP(edgecount, rand() % numcells)
-        {  // MAKE EDGES CONNECTING THE OTHER CELLS
+        {
+            // MAKE EDGES CONNECTING THE OTHER CELLS
             if (edgecount != cellcount)
             {
                 int cnum = rand() % numcells;
@@ -144,6 +142,7 @@ Organism* Organism::Copy(Organism *Parent)
     *this = *Parent;
     return this;
 }
+
 Organism* Organism::Mutate(Organism Parent)
 {
 
@@ -159,8 +158,7 @@ Organism* Organism::Mutate(Organism Parent)
 
 
     FOR_LOOP(cellcount, Parent.Number_of_Cells)
-    { // FOR EACH CELL....
-
+    {
         this->cells[cellcount].Offset = this->cells[cellcount].Starting;
 
 
@@ -212,26 +210,20 @@ Organism* Organism::Mutate(Organism Parent)
             }
         }
     }
+
     return this;
 }
 
 
 void Organism::Update(float Time_Step)
 {
-
-    float
-        DELTA_TIME = 0,
-        DELTA_VELOCITY = 0;
-
-    DELTA_TIME = (SDL_GetTicks() - SCREEN->TIME) / 10;
+    const auto DELTA_TIME = (SDL_GetTicks() - SCREEN->TIME) / 10;
     SCREEN->TIME = SDL_GetTicks();
 
     float Xmove = 0, Ymove = 0;
 
-    //Print(DELTA_TIME);
     for (Cell &Parent : cells)
-    { // Cycle Every Cell
-
+    {
         Parent.Acceleration = ((Parent.Force) / Parent.Mass);
         Parent.Velocity += (Parent.Acceleration); // Change in Velocity equals Acceleration    
         Parent.Offset += Parent.Velocity;     // Change in Position over time equals Velocity   
@@ -243,8 +235,8 @@ void Organism::Update(float Time_Step)
         Ymove += Parent.Offset.Y;
     }
 
-    Xmove = Xmove / (Number_of_Cells);
-    Ymove = Ymove / (Number_of_Cells);
+    Xmove = Xmove / Number_of_Cells;
+    Ymove = Ymove / Number_of_Cells;
     X = Xmove + Potential.X;
     Y = Ymove + Potential.Y;
     // FILLED_CIRCLE( X,Y, 14);
@@ -256,7 +248,7 @@ void Organism::Update(float Time_Step)
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     for (Cell &Parent : cells)
-    { // Cycle Every Cell
+    {
         Parent.Velocity *= .5; // APPLY A CRUDE "FRICTION" SO THAT VELOCITY IS LOST OVER TIME
 
         Parent.See();
@@ -300,63 +292,45 @@ void Organism::Update(float Time_Step)
         C.Force.X += C.Speed * _COS(C.Angle);
         C.Force.Y += C.Speed * _SIN(C.Angle);
     }
-    //  Draw();
 }
-void Organism::Draw()
-{             /// WAIT WHY IS THIS NOT BEING CALLED AT ALL... DID I SHUT IT OFF????
 
+void Organism::Draw()
+{
     FOR_LOOP(cellcount, Number_of_Cells)
     {
         FOR_LOOP(edgecount, cells[cellcount].Number_of_edges)
         {
+            const int Child = cells[cellcount].edges[edgecount].Child_ID;
 
-            int Parent = cells[cellcount].edges[edgecount].Parent_ID;
-            int Child = cells[cellcount].edges[edgecount].Child_ID;
-
-            float x1 = cells[cellcount].Offset.X + Potential.X,
+            const float
+                x1 = cells[cellcount].Offset.X + Potential.X,
                 y1 = cells[cellcount].Offset.Y + Potential.Y,
 
                 x2 = (x1 + cells[Child].Offset.X + Potential.X) / 2,
                 y2 = (y1 + cells[Child].Offset.Y + Potential.Y) / 2;
 
-
-
             SET_DRAW_COLOR(cells[cellcount].Color);
-            // CIRCLE(X, Y,20);
-             //FILLED_CIRCLE(x1,y1,10);   
             LINE(x1, y1, x2, y2);
-            // float angle =  GetAngle(cells[cellcount].Offset, cells[Child].Offset / 2), 
-            //       dist = cells[cellcount].edges[edgecount].Distance;
-            // LINE2(x1,y1,angle, dist  );
         }
     }
 }
 
 int Organism::Collision(Organism *List [])
 {
-    float X = 0,
-        Y = 0;
-    X = this->X,
-        Y = this->Y;
     CIRCLE(X, Y, 50);
     FOR_LOOP(OrganismCount, 55)
     {
         if (List[OrganismCount] != this)
         {
-            if (sqrt(Squared(List[OrganismCount]->Y - Y) + Squared(List[OrganismCount]->X - this->X)) < 50)
+            if (sqrt(Squared(List[OrganismCount]->Y - this->Y) + Squared(List[OrganismCount]->X - this->X)) < 50)
             {
-
-                Organism NEW;
-                NEW.Copy(this);
-                List[OrganismCount]->Mutate(NEW);
+                List[OrganismCount]->Mutate(Organism(*this));
                 FILLED_CIRCLE(X, Y, 30);
                 FILLED_CIRCLE(List[OrganismCount]->X, List[OrganismCount]->Y, 30);
-                //FOR_LOOP(CellCount, List[OrganismCount]->Number_of_Cells){
-
-               // }
             }
         }
     }
+
     return 1;
 }
 
