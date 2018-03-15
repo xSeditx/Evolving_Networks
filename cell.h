@@ -34,13 +34,16 @@ class Organism; struct Edge; // Forward Declaration
 class Cell
 {
 public:
-    Cell(); ~Cell();
+    Cell() = default;
+    ~Cell() = default;
     Cell(Organism *Parent);
-    // Cell(const Cell &other);
-    Vector2D      Offset,
+
+
+    Vector2D
+        Offset,
         Starting,
         Potential,
-        Velocity,          // Force = Mass * Acceleration
+        Velocity,
         Acceleration,
         Force;
 
@@ -52,12 +55,8 @@ public:
         Size,
         Mass;
 
-
-    Cell *PTR_THIS;
     unsigned char Number_of_edges;
     unsigned long Color;
-
-    bool          Raised_Up;
 
     Organism     *Parent;
 
@@ -65,7 +64,7 @@ public:
 
     Net Brain;
 
-    void See();
+    void See() const;
     void Set_Position(int x, int y)
     {
         Offset.X = x;
@@ -85,7 +84,8 @@ public:
 
 struct Edge
 {
-    Edge(); ~Edge();
+    Edge() = default;
+    ~Edge() = default;
 
     Edge(Cell *parent, Cell *other, unsigned char tension);
 
@@ -121,8 +121,8 @@ struct Edge
 class Organism
 {
 public:
-    Organism::Organism();
-    Organism::~Organism();
+    Organism() = default;
+    ~Organism() = default;
 
     Organism(unsigned char numcells, int x, int y);
 
