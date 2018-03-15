@@ -5,9 +5,10 @@
 
 class Neuron;
 
-class Synapse{
+class Synapse
+{
 public:
-    Synapse();~Synapse();
+    Synapse(); ~Synapse();
 
     Synapse(float value, Neuron *other);
 
@@ -16,44 +17,48 @@ public:
     Neuron   *Other;
 
 
-};      
+};
 extern  Synapse   MakeSynapse(float value, Neuron *parent, Neuron *other);
 
 
-class Neuron{
+class Neuron
+{
 public:
-    Neuron();~Neuron();
-   
+    Neuron(); ~Neuron();
+
     float Value;
 
     std::vector<Synapse> Synapses;
 };
 
-class Layer{
+class Layer
+{
 public:
-    Layer();~Layer();
+    Layer(); ~Layer();
 
     Layer(int number_of_neurons);
 
-    enum LType{
-         Input,
-         Hidden,
-         Output
+    enum LType
+    {
+        Input,
+        Hidden,
+        Output
     };   LType LayerType;
 
     int Number_of_Neurons;
-     std::vector<Neuron> Neurons;
+    std::vector<Neuron> Neurons;
 
 };
 
 
-class Net{
+class Net
+{
 public:
-    Net();~Net();
+    Net(); ~Net();
     Net(int inputs, int hidden, int outputs);
 
     int Number_of_Layers;
-     std::vector<Layer> Layers;
+    std::vector<Layer> Layers;
 
     void Think();
     void Draw();

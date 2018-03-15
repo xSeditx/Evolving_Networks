@@ -1,7 +1,7 @@
 #pragma once
 #define SDL_MAIN_HANDLED
 #define _SDL_
-#include<C:\Users\Curt\Documents\Visual Studio 2012\Libraries\SDL2\include\sdl.h>
+#include <SDL.h>
 
 #define Print(x)                  std::cout << x << std::endl
 #define GetRandom( min, max )     ((rand() % (int)(((max) + 1) - (min))) + (min))  
@@ -29,53 +29,56 @@
 #define _SIN(a)        sin(RADIANS(a)) //  Sin[(int)a] //
 
 
-extern float Cos[360], 
-             Sin[360]; 
-                     
+extern float Cos[360],
+Sin[360];
+
 
 // cos(RADIANS(a))
 //sin(RADIANS(a))
 
 
-class WINDOW{
+class WINDOW
+{
 
 public:
-	WINDOW();~WINDOW();
-	WINDOW(int,int,int,int,char*);
+    WINDOW(); ~WINDOW();
+    WINDOW(int, int, int, int, char*);
 
 
-	 int       X,
-	       	   Y,
-		       WIDTH,
-		       HEIGHT;
+    int
+        X,
+        Y,
+        WIDTH,
+        HEIGHT;
 
-	 char     *TITLE;
+    char *TITLE;
 
 
-     SDL_Window             *HWND;
-	 SDL_Texture            *BACK_BUFFER;
-     SDL_Renderer           *RENDER;
+    SDL_Window             *HWND;
+    SDL_Texture            *BACK_BUFFER;
+    SDL_Renderer           *RENDER;
 
-	 Uint32                  *WINDOW_PIXELS;
+    Uint32                  *WINDOW_PIXELS;
 
-	 Uint32                  WINDOW_FORMAT; 
-	 SDL_Event               EVENT;
-	 SDL_Surface            *WINDOW_SURFACE;
-	 SDL_PixelFormat        *MAPPING_FORMAT;
-	 SDL_Point               MOUSE_POSITION,
-                             MOUSE_VELOCITY;
+    Uint32                  WINDOW_FORMAT;
+    SDL_Event               EVENT;
+    SDL_Surface            *WINDOW_SURFACE;
+    SDL_PixelFormat        *MAPPING_FORMAT;
+    SDL_Point               MOUSE_POSITION,
+        MOUSE_VELOCITY;
 
-     double                  MOUSE_ANGLE;
-     struct{
-         bool LEFT,
-             RIGHT;
-     }MOUSE_BUTTON;
+    double                  MOUSE_ANGLE;
+    struct
+    {
+        bool LEFT,
+            RIGHT;
+    }MOUSE_BUTTON;
 
-     unsigned long           DRAW_COLOR;
-	 float  FPS;
-     void SET_DRAW_COLOR     (unsigned long Col);
+    unsigned long           DRAW_COLOR;
+    float  FPS;
+    void SET_DRAW_COLOR(unsigned long Col);
 
-     double TIME;
+    double TIME;
 
     int   FRAME_COUNTER;
     int   CYCLE_COUNTER;
@@ -83,37 +86,37 @@ public:
     int   CyclePerSecond;
 
     float CYCLE_TIMER;
-	float TIMER;
+    float TIMER;
 
 };
- 
 
-extern   int       KEYBOARD_HANDLER   (SDL_Keycode sym);
 
-extern   float     NEWX               (float x,float dist,float angle);
-extern   float     NEWY               (float y,float dist,float angle);
-                    
-extern   void      SYNC               ();
-extern   void      CLS                ();
-extern   void      PRINT_SCREEN       (char *text);
-extern   void      SET_PIXEL          (int, int, Uint32);
-extern   void      SET_PIXELII        (int, int, Uint32);
-extern   void      SET_DRAW_COLOR     (unsigned long Col);
-extern   void      LINE               (int x1,int y1,int x2,int y2);
-extern   void      LINE2              (int x,int y, float Angle,int Length);
-extern   void      CIRCLE             (int x, int y, float radius);
-extern   void      FILLED_CIRCLE      (int x, int y, float radius);
-extern   void      BOX                (int X1, int Y1, int X2, int Y2);
-extern   void      FILLED_BOX         (int X1, int Y1, int X2, int Y2);
-  
+extern   int       KEYBOARD_HANDLER(SDL_Keycode sym);
 
-extern   float    FindAngle          (SDL_Point A, SDL_Point B);
+extern   float     NEWX(float x, float dist, float angle);
+extern   float     NEWY(float y, float dist, float angle);
 
-extern   bool      Is_CLICK           (int X, int Y);
-extern   bool      LOOP_GAME          ();
-extern   bool      SET_ACTIVE_WINDOW  (WINDOW *active);                  
+extern   void      SYNC();
+extern   void      CLS();
+extern   void      PRINT_SCREEN(char *text);
+extern   void      SET_PIXEL(int, int, Uint32);
+extern   void      SET_PIXELII(int, int, Uint32);
+extern   void      SET_DRAW_COLOR(unsigned long Col);
+extern   void      LINE(int x1, int y1, int x2, int y2);
+extern   void      LINE2(int x, int y, float Angle, int Length);
+extern   void      CIRCLE(int x, int y, float radius);
+extern   void      FILLED_CIRCLE(int x, int y, float radius);
+extern   void      BOX(int X1, int Y1, int X2, int Y2);
+extern   void      FILLED_BOX(int X1, int Y1, int X2, int Y2);
 
-extern   WINDOW   *SCREEN; 
+
+extern   float    FindAngle(SDL_Point A, SDL_Point B);
+
+extern   bool      Is_CLICK(int X, int Y);
+extern   bool      LOOP_GAME();
+extern   bool      SET_ACTIVE_WINDOW(WINDOW *active);
+
+extern   WINDOW   *SCREEN;
 extern   int       WINDOW_OFFSET;
 extern   int       LEFT_BOUNDS;
 extern   int       TOP_BOUNDS;
@@ -123,11 +126,12 @@ extern   int       BOTTOM_BOUNDS;
 
 
 
-struct stack_array{
-	int ITERATOR;
-	int SIZE;
-	int *ARRAY;
-	int ADD();
-	int REMOVE();
-	int GETLAST();
+struct stack_array
+{
+    int ITERATOR;
+    int SIZE;
+    int *ARRAY;
+    int ADD();
+    int REMOVE();
+    int GETLAST();
 };

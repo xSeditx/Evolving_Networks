@@ -29,27 +29,28 @@
 #define NUMBER_OF_NEURONS  2
 #define AMOUNT_FOOD        2200
 
-class Organism ; struct Edge; // Forward Declaration
+class Organism; struct Edge; // Forward Declaration
 
-class Cell {
+class Cell
+{
 public:
-   Cell();~Cell();
-   Cell(Organism *Parent);
-  // Cell(const Cell &other);
+    Cell(); ~Cell();
+    Cell(Organism *Parent);
+    // Cell(const Cell &other);
     Vector2D      Offset,
-                  Starting,
-                  Potential,
-                  Velocity,          // Force = Mass * Acceleration
-                  Acceleration,
-                  Force;
-                  
+        Starting,
+        Potential,
+        Velocity,          // Force = Mass * Acceleration
+        Acceleration,
+        Force;
+
     int           ID;
     float         Friction;
-                  
+
     float         Angle,
-                  Speed,
-                  Size,
-                  Mass;
+        Speed,
+        Size,
+        Mass;
 
 
     Cell *PTR_THIS;
@@ -65,9 +66,10 @@ public:
     Net Brain;
 
     void See();
-    void Set_Position(int x, int y){
-        Offset.X   = x;
-        Offset.Y   = y;
+    void Set_Position(int x, int y)
+    {
+        Offset.X = x;
+        Offset.Y = y;
         Starting.X = x;
         Starting.Y = y;
     }
@@ -81,32 +83,34 @@ public:
 
 
 
-struct Edge {
-    Edge();~Edge();
+struct Edge
+{
+    Edge(); ~Edge();
 
     Edge(Cell *parent, Cell *other, unsigned char tension);
 
-   // Cell *second;
+    // Cell *second;
     Cell *Parent_ptr,
-         *Child_ptr;
+        *Child_ptr;
 
     int   Parent_ID,
-           Child_ID;
-               
+        Child_ID;
+
 
     Vector2D  Displacement,
-              RestDistance;
+        RestDistance;
 
-    float         Distance, 
-                   Tension,
-                     Angle;
-    
-    float     Get_Distance(const Cell &child){
-            float ret =  sqrt(Squared(Parent_ptr->Offset.X - child.Offset.X)  + Squared(Parent_ptr->Offset.Y - child.Offset.Y));
-          //  if(ret < 0) ret = 0; // HMMMMMMM
-            return ret;
+    float         Distance,
+        Tension,
+        Angle;
+
+    float     Get_Distance(const Cell &child)
+    {
+        float ret = sqrt(Squared(Parent_ptr->Offset.X - child.Offset.X) + Squared(Parent_ptr->Offset.Y - child.Offset.Y));
+        //  if(ret < 0) ret = 0; // HMMMMMMM
+        return ret;
     }
-//    unsigned long Color;
+    //    unsigned long Color;
 };
 
 
@@ -114,7 +118,8 @@ struct Edge {
 
 
 
-class Organism {
+class Organism
+{
 public:
     Organism::Organism();
     Organism::~Organism();
@@ -122,36 +127,37 @@ public:
     Organism(unsigned char numcells, int x, int y);
 
     unsigned char Number_of_Cells;
-    
-    int ID;
-    int X,Y;
-    Vector2D Position, 
-             Potential, 
-             Velocity, 
-             Starting; 
 
-    float    Distance_moved, 
-             Radius,
-             Angle;
+    int ID;
+    int X, Y;
+    Vector2D Position,
+        Potential,
+        Velocity,
+        Starting;
+
+    float    Distance_moved,
+        Radius,
+        Angle;
 
     std::vector<Cell> cells;
 
 public:
-    
+
     void  Update(float Time_Step);
     void  Draw();
-    void  Set_Position(int x, int y){
-         Starting.X =  x;
-         Starting.Y =  y;
-         Position.X =  x;
-         Position.Y =  y; 
-         Potential.X = x;
-         Potential.Y = y; 
+    void  Set_Position(int x, int y)
+    {
+        Starting.X = x;
+        Starting.Y = y;
+        Position.X = x;
+        Position.Y = y;
+        Potential.X = x;
+        Potential.Y = y;
     }
 
-    
-Organism*   Copy      (Organism *Parent);
-Organism*   Mutate    (Organism  Parent);
-int         Collision (Organism *List[]);
-};          
+
+    Organism*   Copy(Organism *Parent);
+    Organism*   Mutate(Organism  Parent);
+    int         Collision(Organism *List []);
+};
 
