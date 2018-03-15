@@ -8,7 +8,8 @@ class Neuron;
 class Synapse
 {
 public:
-    Synapse(); ~Synapse();
+    Synapse() = default;
+    ~Synapse() = default;
 
     Synapse(float value, Neuron *other);
 
@@ -18,13 +19,14 @@ public:
 
 
 };
-extern  Synapse   MakeSynapse(float value, Neuron *parent, Neuron *other);
+extern Synapse MakeSynapse(float value, Neuron *parent, Neuron *other);
 
 
 class Neuron
 {
 public:
-    Neuron(); ~Neuron();
+    Neuron() = default;
+    ~Neuron() = default;
 
     float Value;
 
@@ -34,7 +36,8 @@ public:
 class Layer
 {
 public:
-    Layer(); ~Layer();
+    Layer() = default;
+    ~Layer() = default;
 
     Layer(int number_of_neurons);
 
@@ -54,7 +57,8 @@ public:
 class Net
 {
 public:
-    Net(); ~Net();
+    Net() = default;
+    ~Net() = default;
     Net(int inputs, int hidden, int outputs);
 
     int Number_of_Layers;
@@ -65,7 +69,12 @@ public:
 };
 
 
-extern inline float Sigmoid(float x);
-extern inline float Activation(float x);
+inline static float Sigmoid(float x)
+{
+    return 1.f / (1.f + exp(-x));
+}
 
-
+inline static float Activation(float x)
+{
+    return Sigmoid(x) * 2 - 1;
+}

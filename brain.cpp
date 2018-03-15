@@ -2,16 +2,6 @@
 #include"brain.h"
 #include"window.h"
 
-extern Neuron *GLOBAL_NEURON; // DEBUG SHIT
-extern Neuron  NARRAY[100];
-
-Synapse::Synapse()
-{ }
-
-Synapse::~Synapse()
-{ }
-
-
 
 ////Synapse MakeSynapse(float value, Neuron *parent, Neuron *other){
 //        Synapse ret;
@@ -26,50 +16,23 @@ Synapse::~Synapse()
 //---------------------------------------------------------------------------------------------------
 //                             LAYER CONSTRUCTOR AND METHODS                                         
 //___________________________________________________________________________________________________
-Layer::Layer()
-{ }
 
 Layer::Layer(int number_of_neurons)
     :Number_of_Neurons(number_of_neurons)
 {
-    Neurons.reserve(number_of_neurons);
-
-    FOR_LOOP(N, number_of_neurons)
-    {
-        Neurons.emplace_back(Neuron());
-    }
+    Neurons.resize(number_of_neurons);
 }
-
-Layer::~Layer()
-{ }
-
-
-
-//---------------------------------------------------------------------------------------------------
-//                             NEURON CONSTRUCTOR AND METHODS                                        
-//___________________________________________________________________________________________________
-Neuron::~Neuron()
-{ }
-Neuron::Neuron()
-    : Value(0)
-{ }
-
 
 
 //---------------------------------------------------------------------------------------------------
 //                             NET CONSTRUCTOR AND METHODS                                           
 //___________________________________________________________________________________________________
-Net::Net()
-{ }
-Net::~Net()
-{ }
+
 Net::Net(int inputs, int hidden, int outputs)
 {
-
-
-    Layers.emplace_back(Layer(inputs));
-    Layers.emplace_back(Layer(hidden));
-    Layers.emplace_back(Layer(outputs));
+    Layers.emplace_back(inputs);
+    Layers.emplace_back(hidden);
+    Layers.emplace_back(outputs);
 
 
     FOR_LOOP(Hcount, hidden)
@@ -97,8 +60,7 @@ Net::Net(int inputs, int hidden, int outputs)
 void Net::Think()
 {
 
-    float
-        Sum = 0.0;
+    float Sum = 0.0;
 
     FOR_LOOP(HiddenCount, Layers[1].Number_of_Neurons)
     {
@@ -126,25 +88,7 @@ void Net::Draw()
 { }
 
 
-
-
-
 Synapse::Synapse(float value, Neuron *other)
     :Other(other),
     Weight(value)
 { }
-
-
-
-
-
-inline float Sigmoid(float x)
-{
-    return 1.0 / (1.0 + exp(-x));
-}
-inline float Activation(float x)
-{
-    float y = (Sigmoid(x) * 2) - 1;
-    return y;
-}
-
