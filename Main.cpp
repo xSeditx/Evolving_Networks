@@ -106,7 +106,9 @@ void main()
 
             Generation++;
 
-            Organism Parent(*C[Best]);
+            Organism Parent;
+            Parent.Copy(C[Best]);
+
             FOR_LOOP(count, number_of_creatures)
             {
                 C[count]->Mutate(Parent);
