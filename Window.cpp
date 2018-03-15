@@ -218,11 +218,11 @@ void SET_PIXEL(int x, int y, Uint32 COLOR)
 void SET_PIXELII(int x, int y, Uint32 COLOR)
 {
 
-    if (x < 0)x += SCREENWIDTH;
-    if (x >= SCREENWIDTH)x -= SCREENWIDTH;
+    while (x < 0) x += SCREENWIDTH;
+    while (x >= SCREENWIDTH) x -= SCREENWIDTH;
 
-    if (y < 0)y += SCREENHEIGHT;
-    if (y > SCREENHEIGHT)y -= SCREENHEIGHT;
+    while (y < 0) y += SCREENHEIGHT;
+    while (y >= SCREENHEIGHT) y -= SCREENHEIGHT;
 
     SCREEN->WINDOW_PIXELS[(y * SCREEN->WIDTH) + x] = COLOR;
 }

@@ -17,10 +17,7 @@
 #include"world.h" 
 #include <string>     // std::string, std::stoi
 
-const   int number_of_creatures = 55;
-
-
-using namespace std;
+const int number_of_creatures = 500;
 
 
 int KEYBOARD_HANDLER(SDL_Keycode sym)
@@ -32,7 +29,6 @@ int KEYBOARD_HANDLER(SDL_Keycode sym)
 
 void main()
 {
-
     srand(1000);
     WINDOW main(0, 0, 1280, 960, "Multicelled automatons");
     SET_ACTIVE_WINDOW(&main);
@@ -105,9 +101,9 @@ void main()
             Average += C[number_of_creatures - 1]->Distance_moved / number_of_creatures;
             AverageAvg += Average;
             Print("  ");
-            cout << " FPS: " << SCREEN->FPS << "  CyclesPerSecond:" << SCREEN->CyclePerSecond << " Generation:" << Generation << endl;
-            cout << " Best:" << C[Best]->Distance_moved << "  " << " Worst: " << C[Worst]->Distance_moved << endl;
-            cout << " Average:" << Average / number_of_creatures << "  Overall Avg :" << AverageAvg / Epoch << " " << endl;
+            std::cout << " FPS: " << SCREEN->FPS << "  CyclesPerSecond:" << SCREEN->CyclePerSecond << " Generation:" << Generation << std::endl;
+            std::cout << " Best:" << C[Best]->Distance_moved << "  " << " Worst: " << C[Worst]->Distance_moved << std::endl;
+            std::cout << " Average:" << Average / number_of_creatures << "  Overall Avg :" << AverageAvg / Epoch << " " << std::endl;
 
             Generation++;
 
