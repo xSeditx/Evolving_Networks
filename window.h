@@ -25,8 +25,8 @@
 #define _CLS              CLS()        //
 #define _SYNC            SYNC()        //
 
-#define _COS(a)       cos(RADIANS(a))  //Cos[(int)a]
-#define _SIN(a)       sin(RADIANS(a))  //Sin[(int)a]
+#define _COS(a)     cos(RADIANS(a))  //   Cos[(int)a] // 
+#define _SIN(a)        sin(RADIANS(a)) //  Sin[(int)a] //
 
 
 extern float Cos[360], 
@@ -72,7 +72,7 @@ public:
      }MOUSE_BUTTON;
 
      unsigned long           DRAW_COLOR;
-	 int  FPS;
+	 float  FPS;
      void SET_DRAW_COLOR     (unsigned long Col);
 
      double TIME;
@@ -80,7 +80,7 @@ public:
     int   FRAME_COUNTER;
     int   CYCLE_COUNTER;
 
-    int CyclePerSecond;
+    int   CyclePerSecond;
 
     float CYCLE_TIMER;
 	float TIMER;

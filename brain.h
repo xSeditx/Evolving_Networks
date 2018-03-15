@@ -3,17 +3,18 @@
 #include<iostream>
 #include<vector>
 
-using namespace std;
-
 class Neuron;
 
 class Synapse{
 public:
     Synapse();~Synapse();
 
+    Synapse(float value, Neuron *other);
+
     int CREATOR;
     float     Weight;
     Neuron   *Other;
+
 
 };      
 extern  Synapse   MakeSynapse(float value, Neuron *parent, Neuron *other);
@@ -22,15 +23,17 @@ extern  Synapse   MakeSynapse(float value, Neuron *parent, Neuron *other);
 class Neuron{
 public:
     Neuron();~Neuron();
-
+   
     float Value;
 
-    vector<Synapse> Synapses;
+    std::vector<Synapse> Synapses;
 };
 
 class Layer{
 public:
     Layer();~Layer();
+
+    Layer(int number_of_neurons);
 
     enum LType{
          Input,
@@ -39,7 +42,7 @@ public:
     };   LType LayerType;
 
     int Number_of_Neurons;
-    vector<Neuron> Neurons;
+     std::vector<Neuron> Neurons;
 
 };
 
@@ -50,14 +53,11 @@ public:
     Net(int inputs, int hidden, int outputs);
 
     int Number_of_Layers;
-    vector<Layer> Layers;
+     std::vector<Layer> Layers;
 
     void Think();
     void Draw();
 };
-
-
-
 
 
 extern inline float Sigmoid(float x);

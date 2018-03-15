@@ -28,30 +28,27 @@ using namespace std;
 Cell::Cell()      : Number_of_edges(0),Angle(0),Speed(0){PTR_THIS = this;}
 Cell::~Cell(){}
 
-Cell::Cell(Organism *parent){
+Cell::Cell(Organism *parent)
+     :  Force(0,0),
+        Velocity(0,0),
+        ID (parent->Number_of_Cells++),
+        Speed(0),  
+        Angle(RANDOM(0)),
+        Friction(RANDOM(1)), 
+        Mass (20),  
+        Parent( parent),  
+        PTR_THIS(this),
+        Brain(Net(3,5,2)),
+        Offset(RANDOM(0), RANDOM(0)),
+        Potential(Offset),
+        Starting(Offset),
+        Color (RGB((55+RANDOM(200)),
+                   (55+RANDOM(200)),
+                   (55+RANDOM(200))))
+{}
 
-    ID =  parent->Number_of_Cells++;
-    Offset.X = Potential.X  =  RANDOM(300);
-    Offset.Y = Potential.Y  =  RANDOM(300);
-    Starting.X = Offset.X ;
-    Starting.Y = Offset.Y ;
 
-    Velocity  = 0;
-    Force     = 0;
 
-    Speed = 0;
-    Angle = RANDOM(0);
-    Friction  = RANDOM(1);
-
-    Color = RGB((55+RANDOM(200)),
-                (55+RANDOM(200)),
-                (55+RANDOM(200)));
-
-    Mass   = 10; // + (rand()%3);
-    Parent = parent;
-
-    PTR_THIS = this; 
-}
 
 void Cell::See(){
 
@@ -66,7 +63,7 @@ void Cell::See(){
                   for(float dist = 0;dist < 8; dist++){
                           Xx = X + dist * _COS(Ang);
                           Yy = Y + dist * _SIN(Ang);
-                          SET_PIXELII(Xx,Yy,RGB(255,255,255));
+                          SET_PIXELII(Xx,Yy, 0xffffff);
                   }
         //  }
 }
@@ -77,36 +74,36 @@ void Cell::See(){
 
 
 
-
 Organism::~Organism(){}
-
 Organism::Organism() {}
+
+
 Organism::Organism(unsigned char numcells , int x, int y)   
-        :Number_of_Cells(0) ,  Distance_moved(0.0)
+        :Number_of_Cells(0), 
+        Distance_moved(0.0), 
+        Position(x,y), 
+        Starting(x,y),  
+        Potential(x,y), 
+        X(x),Y(y),
+        Velocity(0,0),
+        Radius(20),
+        Angle(0)
+
 {
-    Position.X = Starting.X = Potential.X = x ;   
-    Position.Y = Starting.Y = Potential.Y = y ;
-    Velocity.X = Velocity.Y  =  0;
 
 
-    FOR_LOOP(count, numcells){
-              cells.push_back(Cell(this));
-    }
+    FOR_LOOP(count, numcells)  cells.emplace_back((this)); 
+   
+    float     Xx = X,
+              Yy = Y,
+              Theta = 360 / Number_of_Cells;
 
-    float     X  =  Position.X, 
-              Y  =  Position.Y, 
-
-              Xx = 0, Yy = 0,
-
-              angle =  0, Theta =  360 / Number_of_Cells,
-              dist =  15;
-    Xx = X;
-    Yy = Y;
     for(Cell &c : cells){
-              angle+=Theta;
-              Xx = X + dist * cos(RADIANS(angle));
-              Yy = Y + dist * sin(RADIANS(angle));
-              c.Offset.X =  Xx - Position.X;                 c.Offset.Y =  Yy - Position.Y;                        // rand()%(int)dist;//   // rand()%(int)dist;//
+              Angle+=Theta;
+              Xx = X + Radius * cos(RADIANS(Angle));
+              Yy = Y + Radius * sin(RADIANS(Angle));
+              c.Offset.X =  Xx - Position.X;
+              c.Offset.Y =  Yy - Position.Y;  // rand()%(int)dist;//   // rand()%(int)dist;//
               c.Starting = c.Offset;
               c.Number_of_edges = 0;
     }
@@ -125,14 +122,6 @@ Organism::Organism(unsigned char numcells , int x, int y)
        }
    }
 
-   for(Cell &C : cells){
-        int  I = 3, 
-             H = 5, 
-             O = 2; 
-             Net *temp = new  Net(I,H,O); 
-             C.Brain   = *temp; 
-            // C.Number_of_edges /= 2;
-   }
 }
 Organism* Organism::Copy(Organism *Parent)   
 {
@@ -156,15 +145,17 @@ Organism* Organism::Mutate(Organism Parent)
     FOR_LOOP(cellcount, Parent.Number_of_Cells){ // FOR EACH CELL....
         
         this->cells[cellcount].Offset =  this->cells[cellcount].Starting;
-        this->cells[cellcount].Velocity.X = 0;
-        this->cells[cellcount].Velocity.Y = 0;
+
+
+        this->cells[cellcount].Velocity     = 0;
+        this->cells[cellcount].Force        = 0;
+        this->cells[cellcount].Acceleration = 0;  
+
         this->cells[cellcount].Speed = 0;
-        this->cells[cellcount].Force.X = 0;
-        this->cells[cellcount].Force.Y = 0;
-        this->cells[cellcount].Acceleration.X = 0;   
-        this->cells[cellcount].Angle=0;
+        this->cells[cellcount].Angle = 0;
+
         this->cells[cellcount].Mass = Parent.cells[cellcount].Mass;
-        this->cells[cellcount].Acceleration.Y = 0;   
+
         this->cells[cellcount].Parent = this;  
 
         this->cells[cellcount].Brain.Layers[0] = Parent.cells[cellcount].Brain.Layers[0];
@@ -174,33 +165,35 @@ Organism* Organism::Mutate(Organism Parent)
         this->cells[cellcount].Brain.Layers[0].Neurons[2].Value = 0;
         
         this->cells[cellcount].Brain.Layers[1] = Parent.cells[cellcount].Brain.Layers[1];
+
         this->cells[cellcount].Brain.Layers[1].Neurons[0].Value = 0;
         this->cells[cellcount].Brain.Layers[1].Neurons[1].Value = 0;
         this->cells[cellcount].Brain.Layers[1].Neurons[2].Value = 0;
         this->cells[cellcount].Brain.Layers[1].Neurons[3].Value = 0;
         this->cells[cellcount].Brain.Layers[1].Neurons[4].Value = 0;
         
-         FOR_LOOP(HNeuron, Parent.cells[cellcount].Brain.Layers[1].Number_of_Neurons)
-         {
-         
-                 FOR_LOOP(HSynapses, Parent.cells[cellcount].Brain.Layers[0].Number_of_Neurons){
-                     this->cells[cellcount].Brain.Layers[1].Neurons[HNeuron].Synapses[HSynapses].Weight +=  ((RANDOM(2)-1) / 10);
-                 }
+         FOR_LOOP(HNeuron, Parent.cells[cellcount].Brain.Layers[1].Number_of_Neurons){
+             FOR_LOOP(HSynapses, Parent.cells[cellcount].Brain.Layers[0].Number_of_Neurons){
+
+                 this->cells[cellcount].Brain.Layers[1].Neurons[HNeuron].Synapses[HSynapses].Weight +=  ((RANDOM(2)-1) / 10);
+             }
          }
          
          this->cells[cellcount].Brain.Layers[2] = Parent.cells[cellcount].Brain.Layers[2];
+
          this->cells[cellcount].Brain.Layers[2].Neurons[0].Value = 0;
          this->cells[cellcount].Brain.Layers[2].Neurons[1].Value = 0;
          
-         FOR_LOOP(ONeuron , Parent.cells[cellcount].Brain.Layers[2].Number_of_Neurons)
-         {
-                 FOR_LOOP(OSynapses,Parent.cells[cellcount].Brain.Layers[1].Number_of_Neurons){
-                      this->cells[cellcount].Brain.Layers[2].Neurons[ONeuron].Synapses[OSynapses].Weight +=  ((RANDOM(2)-1)/ 10);
-                 }
+         FOR_LOOP(ONeuron , Parent.cells[cellcount].Brain.Layers[2].Number_of_Neurons){
+             FOR_LOOP(OSynapses,Parent.cells[cellcount].Brain.Layers[1].Number_of_Neurons){
+
+                  this->cells[cellcount].Brain.Layers[2].Neurons[ONeuron].Synapses[OSynapses].Weight +=  ((RANDOM(2)-1)/ 10);
+             }
          }
      }
     return this;
 }
+
 
 void Organism::Update(float Time_Step)
 {
@@ -282,7 +275,6 @@ void Organism::Update(float Time_Step)
     }
    //  Draw();
 }
-
 void Organism::Draw(){             /// WAIT WHY IS THIS NOT BEING CALLED AT ALL... DID I SHUT IT OFF????
 
     FOR_LOOP(cellcount, Number_of_Cells){
@@ -310,22 +302,24 @@ void Organism::Draw(){             /// WAIT WHY IS THIS NOT BEING CALLED AT ALL.
     }
 }
 
-
-//void f2(const vector<int> & v)
-
-int Collision(Organism *parent, Organism *List[]){
+int Organism::Collision(Organism *List[]){
           float X = 0,
                 Y = 0;
-                X = parent->X,
-                Y = parent->Y;
-    FOR_LOOP(OrganismCount, 10){
-        if(List[OrganismCount] != parent){
+                X = this->X,
+                Y = this->Y;
+                              CIRCLE(X,Y,50);
+    FOR_LOOP(OrganismCount, 55){
+          if(List[OrganismCount] != this){
+          if(sqrt(Squared(List[OrganismCount]->Y - Y) +  Squared(List[OrganismCount]->X - this->X)) < 50){
 
-           // Print ("  ");
-          if(sqrt(Squared(List[OrganismCount]->Y - Y) +  Squared(List[OrganismCount]->X - parent->X)) < 30){
-            //  Print("Collision"); 
-            //  Print (OrganismCount);
-            
+              Organism NEW;
+              NEW.Copy(this);
+              List[OrganismCount]->Mutate(NEW);
+              FILLED_CIRCLE(X,Y,30);
+              FILLED_CIRCLE(List[OrganismCount]->X,List[OrganismCount]->Y,30);
+            //FOR_LOOP(CellCount, List[OrganismCount]->Number_of_Cells){
+                
+           // }
           }
         }
     }
@@ -334,25 +328,23 @@ int Collision(Organism *parent, Organism *List[]){
 
 
 
-
-
-
 //=============================================================================================================================================================
 //                                                      EDGE CLASS                                                                                          
 //=============================================================================================================================================================
 
 
-
 Edge::Edge(Cell *parent, Cell *other, unsigned char tension)
-    : Parent_ID ( parent->ID),  Child_ID (other->ID) , Tension( tension), Angle (0), Parent_ptr(parent),Child_ptr(other)
-{
-        RestDistance =  Get_Displacement( other->Offset, parent->Offset);
-        Distance     =  Get_Distance(*other); 
-        Displacement =  0;
-}
+    : Parent_ID ( parent->ID),  
+      Child_ID (other->ID) ,
+      Tension( tension),
+      Angle (0), 
+      Parent_ptr(parent),
+      Child_ptr(other),
+      Distance(Get_Distance(*other)),
+      RestDistance(Get_Displacement(other->Offset, parent->Offset)),
+      Displacement(0,0)
+{}
+
 Edge::~Edge(){}
 Edge::Edge() {}
-
-
-
 

@@ -39,7 +39,7 @@ WINDOW::WINDOW(int x,int y,int width,int height,char *title){
         HEIGHT = height;
         TITLE  = title;
 
-        MOUSE_VELOCITY.x = MOUSE_VELOCITY.x =0; MOUSE_ANGLE = 0;
+        MOUSE_VELOCITY.y = MOUSE_VELOCITY.x =0; MOUSE_ANGLE = 0;
 
                                                                                                             if(SDL_Init(SDL_INIT_VIDEO) !=0)std::cout << "Init Video Error" << std::endl;
         HWND = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, 0); if(!HWND)                       std::cout << "ERROR: Initializing SDL Window" << std::endl;
@@ -62,6 +62,7 @@ WINDOW::WINDOW(int x,int y,int width,int height,char *title){
             CYCLE_COUNTER=0;
 		    FPS =0;
             CyclePerSecond=0;
+
      LOOP(360){
          Cos[count] = cos(RADIANS(count));
          Sin[count] = sin(RADIANS(count));
@@ -79,7 +80,7 @@ WINDOW::WINDOW(int x,int y,int width,int height,char *title){
 
   	SCREEN->CYCLE_COUNTER++;
          float delta = SDL_GetTicks() - SCREEN->CYCLE_TIMER;
-	   SCREEN->CyclePerSecond = 1000 / delta ;
+	     SCREEN->CyclePerSecond = 1000 / delta ;
   
 		SCREEN->CYCLE_TIMER = SDL_GetTicks();
  
@@ -237,7 +238,7 @@ void CIRCLE(int x, int y, float radius){
        for (float Angle =0;Angle < 360; Angle++){
            X1 = x + radius * _COS((int)Angle);
            Y1 = y + radius * _SIN((int)Angle);
-               SET_PIXEL(X1,Y1, SCREEN->DRAW_COLOR);
+               SET_PIXELII(X1,Y1, SCREEN->DRAW_COLOR);
        }
 }
 

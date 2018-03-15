@@ -8,8 +8,7 @@
 // TARGET: WINDOW *SCREEN pointer. This is where all functions read from and draw to.                                                                                                                                                                                                                                                                                                 
 //=============================================================================================================                                                                                                                                                                                                                                                                                                              
 
-double COS[360],
-       SIN[360];
+
 
 
 #include"cell.h"
@@ -21,44 +20,19 @@ double COS[360],
 const   int number_of_creatures = 55;
 
 
-World WORLD(960, 1280);
-Neuron *GLOBAL_NEURON = nullptr;
-Neuron NARRAY[100];
+using namespace std;
+
 
 int KEYBOARD_HANDLER(SDL_Keycode sym){
     return 0;
 }
 
 
-#define NUBER_OF_NEURONS    10
-
-void Draw_Edges(int Xx,int Yy, Cell Parent)
-{
-         for(Edge &Child: Parent.edges){
-         
-            float 
-            X = Parent.Offset.X + Xx,
-            Y = Parent.Offset.Y + Yy;
-
-            SET_DRAW_COLOR(Parent.Color);                 // SETS DRAW COLOR TO THAT OF THE CELL
-            LINE2(X,Y, Child.Angle, Child.Distance *.5); // DRAWS EACH EDGE
-            FILLED_CIRCLE(X,Y,5);                        // DRAWS EACH NODE
-            WORLD.SetSpace(X,Y, Parent.Color);
-     }
-}
-
-
-
 
 void main()
 {
-    for(int Angle = 0; Angle < 360; Angle++)
-    {
-        COS[Angle] = cos(RADIANS(Angle));
-        SIN[Angle] = cos(RADIANS(Angle));
-    }
 
-    srand(1500);
+    srand(1000);
     WINDOW main(0,0,1280,960,"Multicelled automatons");
     SET_ACTIVE_WINDOW(&main);
     
@@ -71,31 +45,41 @@ void main()
 
 
     int x     = 0,
-        y     = 100,
+        y     = 10,
         xjump = 100,
         yjump = 100;
 
     FOR_LOOP(count, number_of_creatures){
         x+=xjump;
         if(x > SCREENWIDTH - 100){ x=xjump; y+=yjump;}
-       C[count]->Set_Position(x,y);//rand()%SCREENWIDTH;
-     //  C[count]->cells[2].Brain.Layers[0].Neurons[1].Value = .5;//RANDOM(1); // <- to Trigger Motion in Dormant cells;
+        C[count]->Set_Position(x,y);//rand()%SCREENWIDTH;
+
+
+                    for(Cell &p : C[count]->cells){
+                          p.Brain.Layers[0].Neurons[0].Value = RANDOM(1) - .5;
+                          p.Brain.Layers[0].Neurons[1].Value = RANDOM(1) - .5;
+                          p.Brain.Layers[0].Neurons[2].Value = RANDOM(1) - .5;
+                            
+                    }
+
+
+      // C[count]->cells[2].Brain.Layers[0].Neurons[1].Value = .5;//RANDOM(1); // <- to Trigger Motion in Dormant cells;
     } 
 
 
     Cell *Selected = nullptr;
     _CLS;
-    int Epoch = 0;
+    int Epoch = 1;
     int Generation = 0;
     
     float AverageAvg = 0;
     Vector2D TEST;
-    int FrameSkip = 3;
+    int FrameSkip = 2;
 while(LOOP_GAME()){
 
-      //Epoch++;
+  
 
-      if((Epoch++)%300 == 0)
+      if(Epoch%300 == 0)
       {
               Organism   Parent; 
                    int   Best    = 0,
@@ -106,7 +90,7 @@ while(LOOP_GAME()){
                {
                        Average+=C[count]->Distance_moved;
                        if(C[count]->Distance_moved < C[Worst]->Distance_moved) Worst = count;
-                       if(C[count]->Distance_moved > C[Best]->Distance_moved) Best = count;
+                       if(C[count]->Distance_moved > C[Best]->Distance_moved)  Best = count;
 
                }
 
@@ -126,20 +110,18 @@ while(LOOP_GAME()){
                    C[count]->Mutate(Parent);
 
                    for(Cell &p : C[count]->cells){
-                          p.Brain.Layers[0].Neurons[0].Value = .5;
-                           p.Brain.Layers[0].Neurons[1].Value = .5;
-                           p.Brain.Layers[0].Neurons[2].Value = .5;
+                          p.Brain.Layers[0].Neurons[0].Value =  RANDOM(1) - .5;
+                          p.Brain.Layers[0].Neurons[1].Value =  RANDOM(1) - .5;
+                          p.Brain.Layers[0].Neurons[2].Value =  RANDOM(1) - .5;
                             
                     }
-                   
-                     // C[count] = Mutate(*C[number_of_creatures - 1]); //1 + rand()%90);
                }
         }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
 
-      if(Epoch%FrameSkip==0){
+      if((Epoch++)%FrameSkip==0){
       _CLS;
       }
 
@@ -173,7 +155,7 @@ while(LOOP_GAME()){
 
                         
                         Creature->Update(10);
-                        Collision(Creature, &C[0]);
+                       // Creature->Collision(&C[0]);
 
                      if(Epoch%FrameSkip==0){
                         Creature->Draw(); 
@@ -181,12 +163,12 @@ while(LOOP_GAME()){
                       
         }
 
-       int yy = 0;
-       FOR_LOOP(count , number_of_creatures){
-           yy +=5;
-                 LINE2(5, yy ,0, C[count]->Distance_moved);
-                 
-       }
+      int yy = 0;
+      FOR_LOOP(count , number_of_creatures){
+          yy +=5;
+                LINE2(5, yy ,0, C[count]->Distance_moved);
+                
+      }
 
  if(Epoch%FrameSkip==0){ _SYNC; }
 

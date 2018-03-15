@@ -130,7 +130,9 @@ public:
              Velocity, 
              Starting; 
 
-    float    Distance_moved;
+    float    Distance_moved, 
+             Radius,
+             Angle;
 
     std::vector<Cell> cells;
 
@@ -148,11 +150,8 @@ public:
     }
 
     
-Organism* Copy  (Organism *Parent);
-Organism* Mutate(Organism  Parent);
+Organism*   Copy      (Organism *Parent);
+Organism*   Mutate    (Organism  Parent);
+int         Collision (Organism *List[]);
+};          
 
-};
-
-
-
-extern int Collision(Organism *parent, Organism *List[]);

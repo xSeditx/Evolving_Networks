@@ -5,26 +5,37 @@
 extern Neuron *GLOBAL_NEURON; // DEBUG SHIT
 extern Neuron  NARRAY[100];
 
-Synapse::Synapse(){
-    CREATOR = 1;
-}
-Synapse::~Synapse(){
+Synapse::Synapse(){}
 
-}
-Synapse MakeSynapse(float value, Neuron *parent, Neuron *other){
-        Synapse ret;
-                ret.Other = other; 
-                ret.Weight = value; 
-                ret.CREATOR = 3;
- return ret;
-}
+Synapse::~Synapse(){}
 
+
+
+////Synapse MakeSynapse(float value, Neuron *parent, Neuron *other){
+//        Synapse ret;
+//                ret.Other = other; 
+//                ret.Weight = value; 
+//                ret.CREATOR = 3;
+// return ret;
+//}
+//
 
 
 //---------------------------------------------------------------------------------------------------
 //                             LAYER CONSTRUCTOR AND METHODS                                         
 //___________________________________________________________________________________________________
 Layer::Layer(){}
+
+Layer::Layer(int number_of_neurons)
+     :Number_of_Neurons(number_of_neurons)
+{
+    Neurons.reserve(number_of_neurons);
+
+    FOR_LOOP(N, number_of_neurons){
+        Neurons.emplace_back(Neuron());
+    }
+}    
+
 Layer::~Layer(){}
 
 
@@ -45,61 +56,24 @@ Net::Net(){}
 Net::~Net(){}
 Net::Net(int inputs, int hidden, int outputs){
 
-//_____________________________Input_________________________________________________________________
 
-    Layer *Input = new Layer();
-    Input->LayerType = Layer::Input; 
-    Input->Number_of_Neurons = inputs;
-
-    FOR_LOOP(N, inputs){
-        Neuron *nur = new Neuron(); 
-         Input->Neurons.push_back(*nur);
-      
-    }
-    Layers.push_back(*Input);
-    
-//___________________________Hidden__________________________________________________________________
-
-    Layer *Hidden = new Layer();
-    Hidden->LayerType = Layer::Hidden; 
-    Hidden->Number_of_Neurons = hidden;
-
-    FOR_LOOP(H, hidden){
-        Neuron *hnur = new Neuron(); 
-        Hidden->Neurons.push_back(*hnur);
-    }
-    Layers.push_back(*Hidden);
-
-//___________________________Output__________________________________________________________________
-
-    Layer *Output = new Layer();
-    Output->LayerType = Layer::Output; 
-    Output->Number_of_Neurons = outputs;
-
-    FOR_LOOP(O, outputs){
-        Neuron *onur = new Neuron(); 
-        Output->Neurons.push_back(*onur);
-    }
-   
-    Layers.push_back(*Output);
-//___________________________________________________________________________________________________
-    Number_of_Layers = 3;
+   Layers.emplace_back(Layer(inputs));
+   Layers.emplace_back(Layer(hidden));
+   Layers.emplace_back(Layer(outputs));
 
 
-
-   FOR_LOOP(Hcount, Layers[1].Number_of_Neurons){
-       FOR_LOOP(Icount,  Layers[0].Number_of_Neurons){
-            Layers[1].Neurons[Hcount].Synapses.push_back(
-                MakeSynapse(RANDOM(1), &Layers[1].Neurons[Hcount],
-                                       &Layers[0].Neurons[Icount]));    
+   FOR_LOOP(Hcount,hidden){
+       FOR_LOOP(Icount,  inputs){
+            Layers[1].Neurons[Hcount].Synapses.emplace_back(
+                    Synapse(RANDOM(1), &Layers[0].Neurons[Icount]));    
        }
    }
    
-   FOR_LOOP(Ocount, Layers[2].Number_of_Neurons){
-       FOR_LOOP(Hcount, Layers[1].Number_of_Neurons){
-            Layers[2].Neurons[Ocount].Synapses.push_back(
-                MakeSynapse(RANDOM(1), &Layers[2].Neurons[Ocount],
-                                       &Layers[1].Neurons[Hcount]));    
+   FOR_LOOP(Ocount, outputs){
+       FOR_LOOP(Hcount, hidden){
+           Layers[2].Neurons[Ocount].Synapses.emplace_back(
+                      Synapse(RANDOM(1), &Layers[1].Neurons[Hcount]));    
+
        }
    }
 }
@@ -107,7 +81,7 @@ Net::Net(int inputs, int hidden, int outputs){
 
 
 void Net::Think(){
-
+    
         float 
         Sum = 0.0;
         
@@ -131,6 +105,16 @@ void Net::Think(){
 }
 void Net::Draw(){}
  
+
+
+
+
+Synapse::Synapse(float value, Neuron *other)
+          :Other(other), 
+           Weight(value)
+{}
+
+
 
 
 

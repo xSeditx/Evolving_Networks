@@ -579,17 +579,6 @@ Cell MakeCell(Organism *parent){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 //  
 //
 // Number_of_Cells = 0; // Parent.Number_of_Cells;
@@ -673,12 +662,6 @@ Cell MakeCell(Organism *parent){
 //   }
 //}
 //
-
-
-
-
-
-
 
 
 
@@ -850,29 +833,6 @@ Cell::Cell(const Cell &other){
 //
 
     return ret;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1125,3 +1085,76 @@ Organism::Organism(Organism const &Parent)
         ret->cells[cellcount].Brain.Layers[2] = Parent.cells[cellcount].Brain.Layers[2];
     }
 #endif
+
+
+
+
+
+
+
+ //  for(Cell &C : cells){
+     //   int  I = 3, 
+          //   H = 5, 
+          //   O = 2; 
+           //  Net *temp = new  Net(I,H,O); 
+           //  C.Brain   = *temp; 
+            // C.Number_of_edges /= 2;
+  // }
+
+
+  
+
+
+            //Layers[2].Neurons[Ocount].Synapses.push_back(
+            //    MakeSynapse(RANDOM(1), &Layers[2].Neurons[Ocount],
+            //                           &Layers[1].Neurons[Hcount]));    
+
+
+
+
+  
+//___________________________Hidden__________________________________________________________________
+//
+//    Layer *Hidden = new Layer(hidden);
+//    Hidden->LayerType = Layer::Hidden; 
+//
+//    FOR_LOOP(H, hidden){
+//        Neuron *hnur = new Neuron(); 
+//        Hidden->Neurons.emplace_back(*hnur);
+//    }
+//    Layers.emplace_back(*Hidden);
+//
+////___________________________Output__________________________________________________________________
+//
+//    Layer *Output = new Layer(outputs);
+//    Output->LayerType = Layer::Output; 
+//
+//    FOR_LOOP(O, outputs){
+//        Neuron *onur = new Neuron(); 
+//        Output->Neurons.emplace_back(*onur);
+//    }
+//   
+//    Layers.emplace_back(*Output);
+////___________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+void Draw_Edges(int Xx,int Yy, Cell Parent)
+{
+         for(Edge &Child: Parent.edges){
+         
+            float 
+            X = Parent.Offset.X + Xx,
+            Y = Parent.Offset.Y + Yy;
+
+            SET_DRAW_COLOR(Parent.Color);                 // SETS DRAW COLOR TO THAT OF THE CELL
+            LINE2(X,Y, Child.Angle, Child.Distance *.5); // DRAWS EACH EDGE
+            FILLED_CIRCLE(X,Y,5);                        // DRAWS EACH NODE
+            WORLD.SetSpace(X,Y, Parent.Color);
+     }
+}

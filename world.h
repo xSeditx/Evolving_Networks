@@ -32,10 +32,10 @@ public:
 
       void SetSpace(int x, int y, int value){
           if(y < 0 ) return;
-          // Buffer[x + Size.Width * y] = value;
+           Buffer[x + Size.Width * y] = value;
       }
 
-      vector<Organism>  Creatures;
+      std::vector<Organism>  Creatures;
 
           int *Buffer;
 };
