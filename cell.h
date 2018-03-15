@@ -29,18 +29,24 @@
 #define NUMBER_OF_NEURONS  2
 #define AMOUNT_FOOD        2200
 
-class Organism; struct Edge; // Forward Declaration
 
-class Cell
+class Organism;
+struct Edge;
+
+
+class Cell final
 {
 public:
-    Cell(); ~Cell();
+    Cell() = default;
+    ~Cell() = default;
     Cell(Organism *Parent);
-    // Cell(const Cell &other);
-    Vector2D      Offset,
+
+
+    Vector2D
+        Offset,
         Starting,
         Potential,
-        Velocity,          // Force = Mass * Acceleration
+        Velocity,
         Acceleration,
         Force;
 
@@ -52,12 +58,8 @@ public:
         Size,
         Mass;
 
-
-    Cell *PTR_THIS;
     unsigned char Number_of_edges;
     unsigned long Color;
-
-    bool          Raised_Up;
 
     Organism     *Parent;
 
@@ -65,7 +67,7 @@ public:
 
     Net Brain;
 
-    void See();
+    void See() const;
     void Set_Position(int x, int y)
     {
         Offset.X = x;
@@ -78,14 +80,10 @@ public:
 };
 
 
-
-
-
-
-
-struct Edge
+struct Edge final
 {
-    Edge(); ~Edge();
+    Edge() = default;
+    ~Edge() = default;
 
     Edge(Cell *parent, Cell *other, unsigned char tension);
 
@@ -114,15 +112,11 @@ struct Edge
 };
 
 
-
-
-
-
-class Organism
+class Organism final
 {
 public:
-    Organism::Organism();
-    Organism::~Organism();
+    Organism() = default;
+    ~Organism() = default;
 
     Organism(unsigned char numcells, int x, int y);
 
@@ -144,7 +138,7 @@ public:
 public:
 
     void  Update(float Time_Step);
-    void  Draw();
+    void  Draw() const;
     void  Set_Position(int x, int y)
     {
         Starting.X = x;
@@ -155,9 +149,7 @@ public:
         Potential.Y = y;
     }
 
-
     Organism*   Copy(Organism *Parent);
     Organism*   Mutate(Organism  Parent);
-    int         Collision(Organism *List []);
+    int         Collision(Organism *List []) const;
 };
-

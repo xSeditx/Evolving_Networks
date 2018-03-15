@@ -27,13 +27,11 @@ int TOP_BOUNDS = 0 + WINDOW_OFFSET;
 int RIGHT_BOUNDS = SCREENWIDTH - WINDOW_OFFSET;
 int BOTTOM_BOUNDS = SCREENHEIGHT - WINDOW_OFFSET;
 
-float Cos[360];// = {0}, 
-float Sin[360]; // = {0};
+float COS[360], SIN[360];
 
 
 // CONSTRUCTS A BASIC WINDOW AND BACKBUFFER ASSOCIATED WITH WINDOW
-WINDOW::~WINDOW()
-{ }
+
 WINDOW::WINDOW(int x, int y, int width, int height, char *title)
 {
     X = x;  Y = y;
@@ -67,14 +65,9 @@ WINDOW::WINDOW(int x, int y, int width, int height, char *title)
 
     LOOP(360)
     {
-        Cos[count] = cos(RADIANS(count));
-        Sin[count] = sin(RADIANS(count));
+        COS[count] = cos(RADIANS(count));
+        SIN[count] = sin(RADIANS(count));
     }
-
-    //  for(int Angle =0; Angle > 360; Angle++)Cos[360] = cos(RADIANS(Angle));
-    //  for(int Angle =0; Angle > 360; Angle++)Sin[360] = sin(RADIANS(Angle));
-
-
 }
 
 // MESSAGE HANDLER RETURNS FALSE WHEN APPLICATION IS CLOSED OUT
@@ -179,16 +172,6 @@ void UNLOCK_PIXELS()
 ///////////////////////////////// VECTOR MANIPULATION /////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// FINDS THE NEX X/Y POSITION A DISTANCE FROM THE GIVEN X/Y AT A GIVEN ANGLE
-float NEWX(float x, float dist, float angle)
-{
-    return x + dist * cos(RADIANS(angle));
-}
-float NEWY(float y, float dist, float angle)
-{
-    return y + dist * sin(RADIANS(angle));
-}
-
 void  PRINT_SCREEN(char *text)
 {
     std::cout << "ERROR YOU HAVE NOT SETUP THE PRINT FUNCTION FOR SDL YET DUMBASS" << std::endl;
@@ -218,11 +201,11 @@ void SET_PIXEL(int x, int y, Uint32 COLOR)
 void SET_PIXELII(int x, int y, Uint32 COLOR)
 {
 
-    if (x < 0)x += SCREENWIDTH;
-    if (x >= SCREENWIDTH)x -= SCREENWIDTH;
+    while (x < 0) x += SCREENWIDTH;
+    while (x >= SCREENWIDTH) x -= SCREENWIDTH;
 
-    if (y < 0)y += SCREENHEIGHT;
-    if (y > SCREENHEIGHT)y -= SCREENHEIGHT;
+    while (y < 0) y += SCREENHEIGHT;
+    while (y >= SCREENHEIGHT) y -= SCREENHEIGHT;
 
     SCREEN->WINDOW_PIXELS[(y * SCREEN->WIDTH) + x] = COLOR;
 }
@@ -267,23 +250,22 @@ void CIRCLE(int x, int y, float radius)
     float X1 = x + .5, Y1 = +.5;
     for (float Angle = 0; Angle < 360; Angle++)
     {
-        X1 = x + radius * _COS((int) Angle);
-        Y1 = y + radius * _SIN((int) Angle);
+        X1 = x + radius * _COS(Angle);
+        Y1 = y + radius * _SIN(Angle);
         SET_PIXELII(X1, Y1, SCREEN->DRAW_COLOR);
     }
 }
 
 void FILLED_CIRCLE(int x, int y, float radius)
 {
-    float X1 = x, Y1 = y;
     unsigned long color = SCREEN->DRAW_COLOR;
     for (float r = 0; r < radius; r++)
     {
         float Theta = (360 / (8 * r));
         for (float Angle = 0; Angle < 360; Angle += Theta)
         {
-            X1 = x + r * _COS((int) (Angle));    //X1 = x + r * cos(RADIANS(Angle));
-            Y1 = y + r * _SIN((int) (Angle));    //Y1 = y + r * sin(RADIANS(Angle));
+            const auto X1 = x + r * _COS(Angle);
+            const auto Y1 = y + r * _SIN(Angle);
 
             SET_PIXELII(X1, Y1, color);
         }
@@ -296,8 +278,8 @@ void LINE2(int x, int y, float Angle, int Length)
     unsigned long color = SCREEN->DRAW_COLOR;
     LOOP(Length)
     {
-        Xpos += _COS((int) (Angle)),
-            Ypos += _SIN((int) (Angle));
+        Xpos += _COS(Angle);
+        Ypos += _SIN(Angle);
         SET_PIXELII(Xpos, Ypos, color);
     }
 }
@@ -383,13 +365,6 @@ void LINE(int x1, int y1, int x2, int y2)
             SET_PIXELII(x, y, c);
         }
     }
-}
-
-
-// RETURNS ANGLE IN DEGREES
-float FindAngle(SDL_Point A, SDL_Point B)
-{
-    return atan2f(B.y - A.y, B.x - A.x) / 3.14159 * 180;
 }
 
 
