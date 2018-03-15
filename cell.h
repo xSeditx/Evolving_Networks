@@ -144,7 +144,7 @@ public:
 public:
 
     void  Update(float Time_Step);
-    void  Draw();
+    void  Draw() const;
     void  Set_Position(int x, int y)
     {
         Starting.X = x;
@@ -155,9 +155,8 @@ public:
         Potential.Y = y;
     }
 
-
     Organism*   Copy(Organism *Parent);
     Organism*   Mutate(Organism  Parent);
-    int         Collision(Organism *List []);
+    int         Collision(Organism *List []) const;
 };
 

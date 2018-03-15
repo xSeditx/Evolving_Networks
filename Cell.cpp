@@ -256,7 +256,7 @@ void Organism::Update(float Time_Step)
     }
 }
 
-void Organism::Draw()
+void Organism::Draw() const
 {
     FOR_LOOP(cellcount, Number_of_Cells)
     {
@@ -277,7 +277,7 @@ void Organism::Draw()
     }
 }
 
-int Organism::Collision(Organism *List [])
+int Organism::Collision(Organism *List []) const
 {
     CIRCLE(X, Y, 50);
     FOR_LOOP(OrganismCount, 55)

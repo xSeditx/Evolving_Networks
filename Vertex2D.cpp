@@ -11,13 +11,10 @@
 
 #include"Vertex2D.h"
 
-Vector2D::Vector2D()
+Vector2D::Vector2D(float x, float y)
 {
-    X = 0.0f; Y = 0.0f;
-}
-Vector2D::Vector2D(const float& x, const float& y)
-{
-    this->X = x; this->Y = y;
+    this->X = x;
+    this->Y = y;
 }
 
 //==================================================================================================================================
@@ -25,22 +22,29 @@ Vector2D::Vector2D(const float& x, const float& y)
 
 Vector2D& Vector2D::add(const Vector2D& other)
 {
-    X += other.X; Y += other.Y;
+    X += other.X;
+    Y += other.Y;
     return *this;
 }
+
 Vector2D& Vector2D::subtract(const Vector2D& other)
 {
-    X -= other.X; Y -= other.Y;
+    X -= other.X;
+    Y -= other.Y;
     return *this;
 }
+
 Vector2D& Vector2D::divide(const Vector2D& other)
 {
-    X /= other.X; Y /= other.Y;
+    X /= other.X;
+    Y /= other.Y;
     return *this;
 }
+
 Vector2D& Vector2D::multiply(const Vector2D& other)
 {
-    X *= other.X; Y *= other.Y;
+    X *= other.X;
+    Y *= other.Y;
     return *this;
 }
 
@@ -48,14 +52,17 @@ Vector2D operator +(Vector2D left, const Vector2D& right)
 {
     return left.add(right);
 }
+
 Vector2D operator -(Vector2D left, const Vector2D& right)
 {
     return left.subtract(right);
 }
+
 Vector2D operator /(Vector2D left, const Vector2D& right)
 {
     return left.divide(right);
 }
+
 Vector2D operator *(Vector2D left, const Vector2D& right)
 {
     return left.multiply(right);
@@ -65,14 +72,17 @@ Vector2D& Vector2D::operator +=(const Vector2D& other)
 {
     return add(other);
 }
+
 Vector2D& Vector2D::operator -=(const Vector2D& other)
 {
     return subtract(other);
 }
+
 Vector2D& Vector2D::operator *=(const Vector2D& other)
 {
     return multiply(other);
 }
+
 Vector2D& Vector2D::operator /=(const Vector2D& other)
 {
     return divide(other);
@@ -81,72 +91,84 @@ Vector2D& Vector2D::operator /=(const Vector2D& other)
 //==================================================================================================================================
 //___________  My DOUBLE OVERLOADS to ADD A SINGLE VALUE TO BOTH ELEMENTS OF THE VECTOR ____________________________________________
 //__________________________________________________________________________________________________________________________________
-Vector2D& Vector2D::add(double other)
+Vector2D& Vector2D::add(float other)
 {
-    X += other; Y += other;
+    X += other;
+    Y += other;
     return *this;
 }
-Vector2D& Vector2D::subtract(double other)
+
+Vector2D& Vector2D::subtract(float other)
 {
-    X -= other; Y -= other;
+    X -= other;
+    Y -= other;
     return *this;
 }
-Vector2D& Vector2D::divide(double other)
+
+Vector2D& Vector2D::divide(float other)
 {
-    X /= other; Y /= other;
+    X /= other;
+    Y /= other;
     return *this;
 }
-Vector2D& Vector2D::multiply(double other)
+
+Vector2D& Vector2D::multiply(float other)
 {
-    X *= other; Y *= other;
+    X *= other;
+    Y *= other;
     return *this;
 }
-Vector2D operator +(Vector2D left, double right)
+
+Vector2D operator +(Vector2D left, float right)
 {
     return left.add(right);
 }
-Vector2D operator -(Vector2D left, double right)
+
+Vector2D operator -(Vector2D left, float right)
 {
     return left.subtract(right);
 }
-Vector2D operator /(Vector2D left, double right)
+
+Vector2D operator /(Vector2D left, float right)
 {
     return left.divide(right);
 }
-Vector2D operator *(Vector2D left, double right)
+
+Vector2D operator *(Vector2D left, float right)
 {
     return left.multiply(right);
 }
 
 
 
-Vector2D& Vector2D::operator =(double right)
+Vector2D& Vector2D::operator =(float right)
 {
     return this->assign(right);
 }
 
 
-Vector2D& Vector2D::operator +=(double other)
+Vector2D& Vector2D::operator +=(float other)
 {
     return add(other);
 }
-Vector2D& Vector2D::operator -=(double other)
+
+Vector2D& Vector2D::operator -=(float other)
 {
     return subtract(other);
 }
-Vector2D& Vector2D::operator *=(double other)
+
+Vector2D& Vector2D::operator *=(float other)
 {
     return multiply(other);
 }
-Vector2D& Vector2D::operator /=(double other)
+
+Vector2D& Vector2D::operator /=(float other)
 {
     return divide(other);
 }
-//__________________________________________________________________________________________________________________________________
-//__________________________________________________________________________________________________________________________________
 
 
-Vector2D& Vector2D::assign(double other)
+Vector2D& Vector2D::assign(float other)
 {
     X = other; Y = other;
     return *this;
@@ -170,29 +192,22 @@ std::ostream& operator<<(std::ostream& stream, const Vector2D& vector)
 }
 
 
-double Vector2D::Dot(Vector2D A, Vector2D B)
+float Vector2D::Dot(Vector2D A, Vector2D B)
 {
     return A.X*B.X + A.Y*B.Y;
 }
 
-double Vector2D::Cross(Vector2D A, Vector2D B)
+float Vector2D::Cross(Vector2D A, Vector2D B)
 {
     return A.X*B.Y - A.Y*B.X;
 }
 
 
 
-inline double Squared(double x)
-{
-    return x * x;
-}
 inline double GetAngle(Vector2D A, Vector2D B)
 {
     return atan2f(B.Y - A.Y, B.X - A.X) / 3.14159 * 180;
 }
-
-
-
 
 inline Vector2D Get_Displacement(Vector2D A, Vector2D B)
 {
@@ -201,9 +216,3 @@ inline Vector2D Get_Displacement(Vector2D A, Vector2D B)
     ret.X = A.X - B.X;
     return ret;
 }
-
-
-
-
-
-
