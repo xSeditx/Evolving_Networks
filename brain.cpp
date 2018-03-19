@@ -2,17 +2,6 @@
 #include"brain.h"
 #include"window.h"
 
-
-////Synapse MakeSynapse(float value, Neuron *parent, Neuron *other){
-//        Synapse ret;
-//                ret.Other = other; 
-//                ret.Weight = value; 
-//                ret.CREATOR = 3;
-// return ret;
-//}
-//
-
-
 //---------------------------------------------------------------------------------------------------
 //                             LAYER CONSTRUCTOR AND METHODS                                         
 //___________________________________________________________________________________________________
