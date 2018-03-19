@@ -60,7 +60,7 @@ public:
     std::vector<Layer> Layers;
 
     void Think();
-    void Draw();
+    void Draw(int x, int y);
 };
 
 
@@ -71,5 +71,7 @@ inline static float Sigmoid(float x)
 
 inline static float Activation(float x)
 {
-    return Sigmoid(x) * 2 - 1;
+    return  ((1.0 / (1.0 + exp(-x))) * 2) - 1;
 }
+
+
